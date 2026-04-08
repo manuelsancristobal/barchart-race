@@ -1,0 +1,268 @@
+/* ── Custom properties ─────────────────────────────── */
+:root {
+  --color-primary: #4a90d9;
+  --color-text: #333;
+  --color-text-muted: #555;
+  --color-text-light: #777;
+  --color-border: #ccc;
+  --color-bg-control: #f5f5f5;
+  --color-bg-hover: #e8e8e8;
+  --color-bg-annotation: #f8f8f0;
+}
+
+/* ── Reset & base ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #fff;
+  color: var(--color-text);
+}
+
+/* ── Screen reader only ───────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Layout ────────────────────────────────────────── */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ── Controls ──────────────────────────────────────── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.toggle-group {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.toggle-group button {
+  padding: 6px 14px;
+  border: none;
+  background: var(--color-bg-control);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggle-group button:not(:last-child) {
+  border-right: 1px solid var(--color-border);
+}
+
+.toggle-group button.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.toggle-group button:hover:not(.active) {
+  background: var(--color-bg-hover);
+}
+
+.playback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.playback button {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-control);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.playback button:hover {
+  background: #e0e0e0;
+}
+
+.playback button.playing {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+#year-slider {
+  flex: 1;
+  cursor: pointer;
+}
+
+#year-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* ── Chart ─────────────────────────────────────────── */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+#chart svg {
+  display: block;
+  width: 100%;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.chart-subtitle {
+  font-size: 12px;
+  fill: var(--color-text-light);
+}
+
+.chart-credit {
+  font-size: 10px;
+  fill: var(--color-text-light);
+}
+
+.bar-name {
+  font-size: 13px;
+  font-weight: 600;
+  fill: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bar-group {
+  font-size: 10px;
+  fill: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.bar-value {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.year-bg {
+  font-size: 46px;
+  font-weight: 800;
+  fill: #ddd;
+  text-anchor: end;
+}
+
+.tick text {
+  font-size: 11px;
+  fill: var(--color-text-light);
+}
+
+.tick line,
+.domain {
+  stroke: var(--color-border);
+}
+
+.grid line {
+  stroke: #e8e8e8;
+}
+
+.grid .domain {
+  stroke: none;
+}
+
+/* ── Annotation banner ─────────────────────────────── */
+.annotation-banner {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: var(--color-bg-annotation);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #444;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease, max-height 0.5s ease, padding 0.5s ease, margin 0.5s ease;
+}
+
+.annotation-banner.visible {
+  opacity: 1;
+  max-height: 120px;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+
+.annotation-banner:not(.visible) {
+  padding: 0 16px;
+  margin-top: 0;
+}
+
+/* ── Analysis section ─────────────────────────────── */
+.analysis-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.analysis-section > h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 32px;
+}
+
+.analysis-block {
+  margin-bottom: 40px;
+}
+
+.analysis-block h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.analysis-block img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 12px 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.analysis-context {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.analysis-findings {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+}
