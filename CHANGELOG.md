@@ -1,5 +1,16 @@
 # Evolución del Proyecto
 
+## v4.3 — Fix: iframe eliminado por Kramdown en página de proyecto Jekyll
+
+### Problema
+Kramdown (procesador Markdown de Jekyll) sanitiza el tag `<iframe>` dentro del bloque HTML en `barchart-race.md`, eliminándolo del output renderizado. La página del proyecto se renderiza sin la visualización embebida.
+
+### Corrección
+- `_projects/barchart-race.md`: bloque `<div><iframe>` envuelto en delimitadores `{::nomarkdown}` / `{:/nomarkdown}` para que Kramdown pase el HTML verbatim sin sanitizar
+
+### Decisión de diseño
+`{::nomarkdown}` es el mecanismo estándar de Kramdown para inyectar HTML raw. Preferido sobre alternativas como cambiar a un layout HTML puro o desactivar sanitización global.
+
 ## v4.2 — Fix: visualización no visible en Jekyll por conflicto de rutas
 
 ### Problema
