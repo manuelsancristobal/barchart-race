@@ -74,7 +74,7 @@ def deploy() -> None:
     if html_src.exists():
         JEKYLL_PAGE.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(html_src, JEKYLL_PAGE)
-        logger.info("Copiado index.html → %s", JEKYLL_PAGE)
+        logger.info("Copiado viz.html → %s", JEKYLL_PAGE)
 
     logger.info("Deploy completado. Recuerda hacer git push en el repo Jekyll.")
 

@@ -1,5 +1,19 @@
 # Evolución del Proyecto
 
+## v4.2 — Fix: visualización no visible en Jekyll por conflicto de rutas
+
+### Problema
+Jekyll's `_projects` collection genera `proyectos/barchart-race/index.html` desde `barchart-race.md`, sobreescribiendo el `index.html` estático de la visualización D3.js que copia `deploy.py`. El resultado: los visitantes ven la página descriptiva del proyecto en vez de la visualización.
+
+### Corrección
+- `config.py`: `JEKYLL_PAGE` cambiado de `index.html` → `viz.html`
+- `deploy.py`: log message actualizado para reflejar el nuevo nombre
+- Jekyll: `index.html` renombrado a `viz.html` en `proyectos/barchart-race/`
+- `_projects/barchart-race.md`: embebe la visualización via `<iframe src="./viz.html">`, corregido `github_url` al repo correcto
+
+### Decisión de diseño
+Iframe embedding permite que Jekyll gestione la página del proyecto (layout, navegación, metadata) mientras la visualización D3.js vive en su propio documento sin conflicto de rutas.
+
 ## v4.1 — Fix: formato numérico chileno en datos pre-2022
 
 ### Problema

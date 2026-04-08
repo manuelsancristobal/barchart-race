@@ -23,7 +23,7 @@ JEKYLL_ANNOTATIONS_DIR = JEKYLL_BASE / "assets" / "annotations"
 JEKYLL_CHARTS_DIR = JEKYLL_BASE / "assets" / "charts"
 JEKYLL_CSS_DIR = JEKYLL_BASE / "assets" / "css"
 JEKYLL_JS_DIR = JEKYLL_BASE / "assets" / "js"
-JEKYLL_PAGE = JEKYLL_BASE / "index.html"
+JEKYLL_PAGE = JEKYLL_BASE / "viz.html"
 
 # Directorio de visualización
 VIZ_DIR = PROJECT_ROOT / "viz"
