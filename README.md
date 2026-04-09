@@ -1,26 +1,28 @@
 # Bar Chart Race — ETL Aéreo JAC Chile
 
-Este proyecto comenzó el año 2024, por esa fecha estaban de moda algunas paginas de Youtube que mostraban avances comparativos entre el PIB de algunos países o participación de mercado de algunas marcas. Por esa epoca estaba aprendiendo Python y usaba Google Colab para modificar codigo que encontraba por ahí. La primera versión que me dejó orgulloso me costo una semana de trabajo despues de mi jornada laboral, el producto es lo que puedes ver en los notebooks de jupyter de este repositorio. que se basaba en mis dudas y en lo que encontraba en Stack Overflow.
+Este proyecto comenzó el año 2024, por esa fecha estaban de moda algunas páginas de Youtube que mostraban carreras de gráficos comparativas como el PIB de algunos países, o la participación de mercado de algunas marcas. Por esa época estaba aprendiendo Python y usaba Google Colab para modificar algunos trozos de código que encontraba en gallerias o en StackOverflow.
 
+La primera versión que me dejó orgulloso me costó una semana de desarrollo pos jornada laboral, el producto es el que puedes ver en los notebooks de jupyter de este repositorio.
 
-Dos años después he aprendido un par de trucos, y sumado a que comencé a usar D3.js para visualizaciones interactivas, decidí reconstruir el proyecto desde cero con un ETL modular en Python y una visualización web desplegada en Jekyll.
+Dos años después he aprendido un par de trucos, y sumado a la asistencia de Claude, decidí reconstruir el proyecto desde cero, esta vez con una lógica de ETL (Extract, Transform, Load) usando Python y una visualización web desplegada en Jekyll.
 
-Este repositorio contiene el sistema ETL (Extract, Transform, Load) para procesar los datos de tráfico aéreo internacional de la Junta de Aeronáutica Civil (JAC) de Chile y generar las visualizaciones interactivas de "Bar Chart Race" desplegadas en [manuelsancristobal.github.io](https://manuelsancristobal.github.io/proyectos/barchart-race/).
+Este repositorio contiene un pipeline completo para procesar los datos de tráfico aéreo internacional de la Junta de Aeronáutica Civil (JAC) de Chile y generar visualizaciones interactivas tipo "Bar Chart Race" desplegadas en [manuelsancristobal.github.io](https://manuelsancristobal.github.io/proyectos/barchart-race/).
 
 ## Decisiones de Diseño e Implementación
 
-- **Lógica de Ranking Acumulado**: La visualización utiliza sumas acumuladas (`cumsum`) para representar el crecimiento histórico. Si un destino o aerolínea registra 0 movimiento *nuevo* en un año específico, el sistema rellena internamente con 0 para mantener su valor acumulado anterior. Esto permite que las barras permanezcan en el ranking basándose únicamente en su total acumulado, asegurando una transición suave y coherente con el crecimiento histórico.
+- **Lógica de Ranking Acumulado**: La animación utiliza sumas acumuladas (`cumsum`) para representar el crecimiento histórico. Si un destino o aerolínea registra 0 movimiento *nuevo* en un año específico, el sistema rellena internamente con 0 para mantener su valor acumulado anterior. Esto permite que las barras permanezcan en el ranking basándose únicamente en su total acumulado manteniendo una transición suave.
 - **Mapeo Consistente**: Se aplica el último mapeo conocido (continente o grupo corporativo) a toda la serie histórica de cada entidad. Esto evita que una barra cambie de color o categoría si el mapeo se actualiza o si la entidad cambia de nombre/operador en el tiempo.
-- **Sincronización Inteligente de UI**: Al cambiar entre perspectivas o dimensiones, el sistema intenta mantener el año actual en el slider. Solo se reseteará al inicio de la serie si el año seleccionado no existe en el nuevo conjunto de datos.
-- **Animación Fluida con Granularidad Mensual**: Los datos se agregan por año+mes (~506 frames) y se animan a ~80ms por frame, logrando transiciones graduales que revelan patrones estacionales reales. El slider mantiene granularidad anual (43 posiciones) y la animación recorre los meses internamente.
-- **JSON Compacto**: Formato indexado por entidad con un array de valores alineado a periodos compartidos (`periods`, `year_ranges`, `entities[].values`). Reduce el tamaño de ~11 MB a ~4.6 MB total para los 8 archivos.
+- **Sincronización Inteligente de UI**: Al cambiar entre perspectivas o dimensiones, el sistema intenta mantener el año actual en el slider. Solo se resetea al inicio de la serie si el año seleccionado no existe entre las perspectivas o dimensiones.
+- **Animación Fluida con Granularidad Mensual**: Los datos se agregan por año+mes (~506 frames) y se animan a ~80ms por frame, logrando transiciones graduales. El slider mantiene la anualidad (43 posiciones) y la animación recorre los meses internamente.
+- **JSON Compacto**: Este formato contiene un `array` de valores con los periodos compartidos (`periods`, `year_ranges`, `entities[].values`). Este formato reduce el tamaño de ~11 MB a ~4.6 MB total para los 8 archivos.
 - **Automatización del Despliegue**: El script `src/deploy.py` automatiza la copia de los archivos JSON y las anotaciones hacia el repositorio local de Jekyll. El usuario debe realizar el `git push` manualmente.
-- **Flujo de Trabajo Iterativo**: El ETL genera un reporte de **países no mapeados** (`data/work/unmapped_countries.txt`) para revisión y corrección manual durante el desarrollo.
+- **Flujo de Trabajo Iterativo**: El pipeline genera un reporte de **países no mapeados** (`data/work/unmapped_countries.txt`) para revisión y corrección manual durante el desarrollo.
 
 ## Pendientes y Validaciones
 
 - [x] **Validación de Carga**: Se confirmó que `CAR_LIB` está en Kilos y `CARGA_TON` en Toneladas. La fórmula final es `CARGA_TOTAL = (CAR_LIB / 1000) + CARGA_TON`.
 - [x] **Mapeo de Aerolíneas**: Se usa la columna `Grupo` existente en los datos JAC directamente (sin archivo de mapeo externo). Si `Grupo` está vacío, se usa el nombre del operador como fallback.
+- [x] **Diferencia de formato**: La BD de la JAC hasta el año 2022 contiene "," como separador de miles, lo que genera un problema al importarse.
 
 ## Inicio Rapido
 
@@ -148,10 +150,7 @@ Barchart-race/
 │       ├── css/barchart.css  # Estilos
 │       └── js/barchart-race.js # Motor D3.js (animación mensual)
 ├── tests/                   # 75 tests unitarios + integración
-├── PLAN.md                  # Arquitectura y mapa de ruta
 ├── run.py                   # Punto de entrada unico (python run.py help)
 ├── CHANGELOG.md             # Evolución del proyecto
 └── pyproject.toml           # Metadata, dependencias, config herramientas
 ```
-
-Consulta el archivo [PLAN.md](PLAN.md) para ver la arquitectura detallada y el mapa de ruta de implementación.
