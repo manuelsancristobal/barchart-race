@@ -146,10 +146,23 @@ def chart_01_total_traffic(all_data: dict):
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left", framealpha=0.9)
 
-    # Anotar COVID
-    ax1.axvspan(2020, 2021, alpha=0.15, color="gray", label="COVID-19")
-    ax1.text(2020.5, ax1.get_ylim()[1] * 0.5, "COVID-19", ha="center",
+    # Anotar COVID (restricciones hasta ~oct 2022)
+    ax1.axvspan(2020, 2022.83, alpha=0.15, color="gray", label="COVID-19")
+    ax1.text(2021.4, ax1.get_ylim()[1] * 0.8, "COVID-19", ha="center",
              fontsize=9, color="gray", fontstyle="italic")
+
+    # Detectar año incompleto al final de la serie
+    all_periods = get_periods(all_data["emisivo_destinos_pasajeros"])
+    last_year = all_periods[-1][0]
+    first_year = all_periods[0][0]
+    months_in_last_year = [mo for yr, mo in all_periods if yr == last_year]
+
+    if len(months_in_last_year) < 12 and last_year != first_year:
+        ax1.axvspan(last_year - 0.5, last_year + 0.5, alpha=0.12, color="orange")
+        first_mo = MONTH_NAMES[min(months_in_last_year)].lower()
+        last_mo = MONTH_NAMES[max(months_in_last_year)].lower()
+        ax1.text(last_year, ax1.get_ylim()[1] * 0.85, f"{last_year}\n({first_mo}-{last_mo})",
+                 ha="center", fontsize=8, color="darkorange", fontstyle="italic")
 
     savefig(fig, "01_total_traffic")
 
