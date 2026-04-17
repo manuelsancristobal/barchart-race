@@ -15,7 +15,7 @@ CSV_LOCAL = DATA_RAW / "jac_data.csv"
 CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 
 # Ruta al repo Jekyll local (configurable vía variable de entorno)
-_default_jekyll = Path.home() / "OneDrive" / "Documentos" / "manuelsancristobal.github.io"
+_default_jekyll = Path.home() / "manuelsancristobal.github.io"
 JEKYLL_REPO = Path(os.getenv("JEKYLL_REPO", str(_default_jekyll)))
 JEKYLL_BASE = JEKYLL_REPO / "proyectos" / "barchart-race"
 JEKYLL_DATA_DIR = JEKYLL_BASE / "assets" / "data"
@@ -24,6 +24,10 @@ JEKYLL_CHARTS_DIR = JEKYLL_BASE / "assets" / "charts"
 JEKYLL_CSS_DIR = JEKYLL_BASE / "assets" / "css"
 JEKYLL_JS_DIR = JEKYLL_BASE / "assets" / "js"
 JEKYLL_PAGE = JEKYLL_BASE / "viz.html"
+JEKYLL_PROJECTS_DIR = JEKYLL_REPO / "_projects"
+
+# Markdown del proyecto (fuente local)
+JEKYLL_PROJECT_MD = PROJECT_ROOT / "jekyll" / "barchart-race.md"
 
 # Directorio de visualización
 VIZ_DIR = PROJECT_ROOT / "viz"

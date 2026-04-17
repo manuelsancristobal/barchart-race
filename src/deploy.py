@@ -14,6 +14,8 @@ from src.config import (
     JEKYLL_DATA_DIR,
     JEKYLL_JS_DIR,
     JEKYLL_PAGE,
+    JEKYLL_PROJECT_MD,
+    JEKYLL_PROJECTS_DIR,
     VIZ_DIR,
 )
 
@@ -75,6 +77,12 @@ def deploy() -> None:
         JEKYLL_PAGE.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(html_src, JEKYLL_PAGE)
         logger.info("Copiado viz.html → %s", JEKYLL_PAGE)
+
+    # ── Markdown del proyecto ──
+    if JEKYLL_PROJECT_MD.exists():
+        JEKYLL_PROJECTS_DIR.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(JEKYLL_PROJECT_MD, JEKYLL_PROJECTS_DIR / JEKYLL_PROJECT_MD.name)
+        logger.info("Copiado proyecto .md → %s", JEKYLL_PROJECTS_DIR)
 
     logger.info("Deploy completado. Recuerda hacer git push en el repo Jekyll.")
 

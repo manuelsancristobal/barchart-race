@@ -15,7 +15,8 @@ Este repositorio contiene un pipeline completo para procesar los datos de tráfi
 - **Sincronización Inteligente de UI**: Al cambiar entre perspectivas o dimensiones, el sistema intenta mantener el año actual en el slider. Solo se resetea al inicio de la serie si el año seleccionado no existe entre las perspectivas o dimensiones.
 - **Animación Fluida con Granularidad Mensual**: Los datos se agregan por año+mes (~506 frames) y se animan a ~80ms por frame, logrando transiciones graduales. El slider mantiene la anualidad (43 posiciones) y la animación recorre los meses internamente.
 - **JSON Compacto**: Este formato contiene un `array` de valores con los periodos compartidos (`periods`, `year_ranges`, `entities[].values`). Este formato reduce el tamaño de ~11 MB a ~4.6 MB total para los 8 archivos.
-- **Automatización del Despliegue**: El script `src/deploy.py` automatiza la copia de los archivos JSON y las anotaciones hacia el repositorio local de Jekyll. El usuario debe realizar el `git push` manualmente.
+- **Automatización del Despliegue**: El script `src/deploy.py` automatiza la copia de datos, gráficos, visualización y el markdown del proyecto hacia el repositorio local de Jekyll. El usuario debe realizar el `git push` manualmente.
+- **Proyecto Autocontenido**: El markdown del proyecto (`jekyll/barchart-race.md`) con los textos de análisis vive en este repo, no en el repo Jekyll. El deploy lo copia a `_projects/` del repo Jekyll. Así todo el contenido (ETL, visualización, gráficos y análisis escrito) se gestiona desde un solo lugar.
 - **Flujo de Trabajo Iterativo**: El pipeline genera un reporte de **países no mapeados** (`data/work/unmapped_countries.txt`) para revisión y corrección manual durante el desarrollo.
 
 ## Pendientes y Validaciones
@@ -24,7 +25,7 @@ Este repositorio contiene un pipeline completo para procesar los datos de tráfi
 - [x] **Mapeo de Aerolíneas**: Se usa la columna `Grupo` existente en los datos JAC directamente (sin archivo de mapeo externo). Si `Grupo` está vacío, se usa el nombre del operador como fallback.
 - [x] **Diferencia de formato**: La BD de la JAC hasta el año 2022 contiene "," como separador de miles, lo que genera un problema al importarse.
 
-## Inicio Rapido
+## Inicio Rápido
 
 ```bash
 python run.py              # Ver todos los comandos disponibles
@@ -107,13 +108,13 @@ Abrir en el navegador: `http://localhost:8000/viz/index.html`
 ### Copiar al repo Jekyll
 
 ```bash
-# Opcionalmente configurar la ruta al repo Jekyll (por defecto ~/OneDrive/Documentos/manuelsancristobal.github.io)
+# Opcionalmente configurar la ruta al repo Jekyll
 export JEKYLL_REPO="/ruta/al/repo/jekyll"
 
 python -m src.deploy
 ```
 
-Copia datos, charts, HTML, CSS y JS al repo Jekyll local. El `git push` se realiza manualmente.
+Copia datos, charts, HTML, CSS, JS y el markdown del proyecto (`jekyll/barchart-race.md`) al repo Jekyll local. El `git push` se realiza manualmente.
 
 ### Inspeccionar datos crudos
 
@@ -143,13 +144,15 @@ Barchart-race/
 │   │   └── load.py          # Generación de JSONs
 │   ├── main.py              # Orquestador del ETL
 │   └── deploy.py            # Copia al repo Jekyll
+├── jekyll/
+│   └── barchart-race.md     # Markdown del proyecto (deploy lo copia a Jekyll)
 ├── notebooks/original/      # Notebooks prototipo archivados
 ├── viz/
 │   ├── index.html            # Página de visualización
 │   └── assets/
 │       ├── css/barchart.css  # Estilos
 │       └── js/barchart-race.js # Motor D3.js (animación mensual)
-├── tests/                   # 75 tests unitarios + integración
+├── tests/                   # 79 tests unitarios + integración
 ├── run.py                   # Punto de entrada unico (python run.py help)
 ├── CHANGELOG.md             # Evolución del proyecto
 └── pyproject.toml           # Metadata, dependencias, config herramientas

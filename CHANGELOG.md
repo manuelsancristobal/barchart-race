@@ -1,5 +1,18 @@
 # Evolución del Proyecto
 
+## v4.4 — Unificar markdown del proyecto en el repo barchart-race
+
+### Problema
+El archivo `_projects/barchart-race.md` (textos de análisis, referencias a gráficos, iframe de la visualización) vivía exclusivamente en el repo Jekyll (`manuelsancristobal.github.io`), separado del código que genera los datos y gráficos. Esto fragmentaba el proyecto: editar un gráfico y su texto explicativo requería tocar dos repos, y quien clonara el repo no veía los análisis escritos.
+
+### Corrección
+- `jekyll/barchart-race.md`: copia del markdown del proyecto, ahora versionado en este repo
+- `config.py`: nuevas constantes `JEKYLL_PROJECT_MD` y `JEKYLL_PROJECTS_DIR`
+- `deploy.py`: nuevo paso que copia `jekyll/barchart-race.md` → `{JEKYLL_REPO}/_projects/barchart-race.md`
+
+### Decisión de diseño
+El repo `barchart-race` pasa a ser la fuente única de verdad para todo el proyecto (ETL, visualización, gráficos y análisis escrito). El repo Jekyll queda como vitrina que consume lo que produce `deploy.py`. Esto sigue el estándar de portfolios técnicos: proyecto autocontenido y reproducible desde un solo repo.
+
 ## v4.3 — Fix: iframe eliminado por Kramdown en página de proyecto Jekyll
 
 ### Problema
