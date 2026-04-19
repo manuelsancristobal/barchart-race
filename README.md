@@ -25,7 +25,105 @@ Este repositorio contiene un pipeline completo para procesar los datos de tráfi
 - [x] **Mapeo de Aerolíneas**: Se usa la columna `Grupo` existente en los datos JAC directamente (sin archivo de mapeo externo). Si `Grupo` está vacío, se usa el nombre del operador como fallback.
 - [x] **Diferencia de formato**: La BD de la JAC hasta el año 2022 contiene "," como separador de miles, lo que genera un problema al importarse.
 
-## Inicio Rápido
+## Guía para Principiantes
+
+### ¿Qué es `make`?
+
+`make` es una herramienta que ejecuta comandos predefinidos. En vez de recordar comandos largos, solo escribes `make` seguido de una palabra clave. Para ver todos los comandos disponibles:
+
+```bash
+make help
+```
+
+### Requisitos Previos
+
+1. **Python 3.10 o superior** — [Descargar aquí](https://www.python.org/downloads/)
+2. **Git** — [Descargar aquí](https://git-scm.com/downloads)
+3. **Make** — En Windows viene incluido con Git Bash. En macOS/Linux ya está instalado.
+
+### Instalación paso a paso
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/manuelsancristobal/barchart-race.git
+cd barchart-race
+
+# 2. Crear un entorno virtual (aísla las dependencias de este proyecto)
+python -m venv .venv
+
+# 3. Activar el entorno virtual
+source .venv/Scripts/activate   # Windows (Git Bash)
+# source .venv/bin/activate     # Linux / macOS
+
+# 4. Instalar el proyecto y sus dependencias
+make install-dev
+```
+
+### Comandos principales
+
+Todos los comandos se ejecutan desde la carpeta raíz del proyecto, con el entorno virtual activado.
+
+```bash
+make help       # Muestra todos los comandos disponibles
+make test       # Ejecuta los tests para verificar que todo funciona
+make lint       # Verifica la calidad del código
+make assets     # Genera los gráficos de análisis (PNGs)
+make deploy     # Copia archivos al repo Jekyll (portafolio web)
+make clean      # Elimina archivos temporales
+```
+
+### Flujo de trabajo típico
+
+```bash
+# 1. Generar los datos procesados (JSONs)
+python run.py etl
+
+# 2. Generar los gráficos de análisis
+make assets
+
+# 3. Abrir la visualización en el navegador
+make ver
+
+# 4. Si modificaste el análisis en jekyll/barchart-race.md:
+make deploy     # Copia todo al repo Jekyll
+```
+
+### ¿Cómo actualizo el análisis en el portafolio web?
+
+```
+Tu proyecto                    Repo Jekyll                   Sitio web
+─────────────                  ──────────                    ─────────
+
+jekyll/barchart-race.md ──┐
+                          ├─ make deploy ──→  _projects/barchart-race.md
+viz/assets/charts/*.png ──┘                  proyectos/barchart-race/assets/
+                                                    │
+                                              git push ──→  manuelsancristobal.github.io
+```
+
+**Para modificar texto de análisis:**
+
+1. Edita `jekyll/barchart-race.md` con los cambios que quieras
+2. Ejecuta `make deploy` (copia los archivos al repo Jekyll local)
+3. Ve a la carpeta del repo Jekyll (`~/manuelsancristobal.github.io`)
+4. Ejecuta `git add . && git commit -m "actualizar análisis" && git push`
+5. Espera ~1 minuto y el cambio aparece en tu sitio web
+
+**Para agregar un gráfico nuevo:**
+
+1. Genera el gráfico con `make assets` (el PNG queda en `viz/assets/charts/`)
+2. Edita `jekyll/barchart-race.md` y agrega la referencia al gráfico:
+   ```markdown
+   ![Descripción del gráfico](./assets/charts/mi_grafico.png)
+   ```
+3. Ejecuta `make deploy` (copia el `.md` y los PNGs al repo Jekyll)
+4. Ve al repo Jekyll, haz commit y push
+
+> **Importante:** `make deploy` solo copia archivos a tu computador. El sitio web no se actualiza hasta que haces `git push` en el repo Jekyll.
+
+---
+
+## Inicio Rápido (referencia)
 
 ```bash
 python run.py              # Ver todos los comandos disponibles
