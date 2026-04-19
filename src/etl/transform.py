@@ -64,7 +64,9 @@ def filter_by_perspectiva(df: pd.DataFrame, perspectiva: str) -> pd.DataFrame:
 
 
 def _resolve_columns(
-    perspectiva: str, dimension: str, metrica: str,
+    perspectiva: str,
+    dimension: str,
+    metrica: str,
 ) -> tuple[str, str | None, str]:
     """Retorna (name_col, group_col, value_col) según la combinación."""
     if dimension == "destinos":

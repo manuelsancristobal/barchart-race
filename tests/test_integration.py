@@ -22,9 +22,20 @@ def raw_df():
 
 class TestExtractReal:
     def test_has_expected_columns(self, raw_df):
-        expected = {"year", "month", "PASAJEROS_TOTAL", "CARGA_TOTAL", "CARGA_TON",
-                    "NAC", "OPER_2", "ORIG_1_PAIS", "DEST_1_PAIS",
-                    "ORIG_1_N", "DEST_1_N", "Grupo"}
+        expected = {
+            "year",
+            "month",
+            "PASAJEROS_TOTAL",
+            "CARGA_TOTAL",
+            "CARGA_TON",
+            "NAC",
+            "OPER_2",
+            "ORIG_1_PAIS",
+            "DEST_1_PAIS",
+            "ORIG_1_N",
+            "DEST_1_N",
+            "Grupo",
+        }
         assert expected.issubset(set(raw_df.columns))
 
     def test_year_range(self, raw_df):

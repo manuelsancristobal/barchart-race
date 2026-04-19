@@ -15,19 +15,21 @@ from src.etl.transform import (
 
 def _make_normalized_df():
     """DataFrame normalizado con datos mínimos para probar transform."""
-    return pd.DataFrame({
-        "year": [2020, 2020, 2021, 2021, 2020, 2020],
-        "month": [1, 1, 1, 1, 1, 1],
-        "NAC": ["INTERNACIONAL"] * 4 + ["NACIONAL", "INTERNACIONAL"],
-        "OPER_2": ["SALEN", "SALEN", "SALEN", "LLEGAN", "SALEN", "LLEGAN"],
-        "ORIG_1_PAIS": ["CHILE", "CHILE", "CHILE", "ARGENTINA", "CHILE", "ESTADOS UNIDOS"],
-        "DEST_1_PAIS": ["ARGENTINA", "BRASIL", "ARGENTINA", "CHILE", "SANTIAGO", "CHILE"],
-        "ORIG_1_N": ["SANTIAGO", "SANTIAGO", "SANTIAGO", "BUENOS AIRES", "SANTIAGO", "MIAMI"],
-        "DEST_1_N": ["BUENOS AIRES", "SAO PAULO", "BUENOS AIRES", "SANTIAGO", "TEMUCO", "SANTIAGO"],
-        "Grupo": ["LATAM", "GOL", "LATAM", "AEROLINEAS ARGENTINAS", "LATAM", "AMERICAN AIRLINES"],
-        "PASAJEROS_TOTAL": [1000, 500, 800, 300, 200, 400],
-        "CARGA_TOTAL": [10.0, 5.0, 8.0, 3.0, 2.0, 4.0],
-    })
+    return pd.DataFrame(
+        {
+            "year": [2020, 2020, 2021, 2021, 2020, 2020],
+            "month": [1, 1, 1, 1, 1, 1],
+            "NAC": ["INTERNACIONAL"] * 4 + ["NACIONAL", "INTERNACIONAL"],
+            "OPER_2": ["SALEN", "SALEN", "SALEN", "LLEGAN", "SALEN", "LLEGAN"],
+            "ORIG_1_PAIS": ["CHILE", "CHILE", "CHILE", "ARGENTINA", "CHILE", "ESTADOS UNIDOS"],
+            "DEST_1_PAIS": ["ARGENTINA", "BRASIL", "ARGENTINA", "CHILE", "SANTIAGO", "CHILE"],
+            "ORIG_1_N": ["SANTIAGO", "SANTIAGO", "SANTIAGO", "BUENOS AIRES", "SANTIAGO", "MIAMI"],
+            "DEST_1_N": ["BUENOS AIRES", "SAO PAULO", "BUENOS AIRES", "SANTIAGO", "TEMUCO", "SANTIAGO"],
+            "Grupo": ["LATAM", "GOL", "LATAM", "AEROLINEAS ARGENTINAS", "LATAM", "AMERICAN AIRLINES"],
+            "PASAJEROS_TOTAL": [1000, 500, 800, 300, 200, 400],
+            "CARGA_TOTAL": [10.0, 5.0, 8.0, 3.0, 2.0, 4.0],
+        }
+    )
 
 
 class TestFilterInternational:
@@ -94,38 +96,44 @@ class TestAggregate:
 class TestComputeCumulative:
     def test_cumsum_across_months(self):
         """Cumsum works across months within the same year."""
-        df = pd.DataFrame({
-            "name": ["A", "A", "A"],
-            "group": ["G1", "G1", "G1"],
-            "year": [2020, 2020, 2020],
-            "month": [1, 2, 3],
-            "value": [100, 200, 50],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["A", "A", "A"],
+                "group": ["G1", "G1", "G1"],
+                "year": [2020, 2020, 2020],
+                "month": [1, 2, 3],
+                "value": [100, 200, 50],
+            }
+        )
         result = compute_cumulative(df)
         a_m3 = result[(result["name"] == "A") & (result["year"] == 2020) & (result["month"] == 3)]
         assert a_m3["value"].iloc[0] == 350  # 100 + 200 + 50
 
     def test_cumsum_across_years(self):
-        df = pd.DataFrame({
-            "name": ["A", "A", "B", "B"],
-            "group": ["G1", "G1", "G2", "G2"],
-            "year": [2020, 2021, 2020, 2021],
-            "month": [1, 1, 1, 1],
-            "value": [100, 200, 50, 30],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["A", "A", "B", "B"],
+                "group": ["G1", "G1", "G2", "G2"],
+                "year": [2020, 2021, 2020, 2021],
+                "month": [1, 1, 1, 1],
+                "value": [100, 200, 50, 30],
+            }
+        )
         result = compute_cumulative(df)
         a_2021 = result[(result["name"] == "A") & (result["year"] == 2021)]
         assert a_2021["value"].iloc[0] == 300  # 100 + 200
 
     def test_fills_missing_periods(self):
         """If an entity has no data in a period, it is filled with 0 and keeps cumulative."""
-        df = pd.DataFrame({
-            "name": ["A", "A", "B"],
-            "group": ["G1", "G1", "G2"],
-            "year": [2020, 2021, 2020],
-            "month": [1, 1, 1],
-            "value": [100, 200, 50],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["A", "A", "B"],
+                "group": ["G1", "G1", "G2"],
+                "year": [2020, 2021, 2020],
+                "month": [1, 1, 1],
+                "value": [100, 200, 50],
+            }
+        )
         result = compute_cumulative(df)
         # B should have entry for 2021-m1 with value = 50 (keeps cumulative)
         b_2021 = result[(result["name"] == "B") & (result["year"] == 2021)]
@@ -135,33 +143,39 @@ class TestComputeCumulative:
 
 class TestApplyContinentMapping:
     def test_known_countries(self):
-        df = pd.DataFrame({
-            "name": ["MIAMI", "BUENOS AIRES"],
-            "group": ["ESTADOS UNIDOS", "ARGENTINA"],
-            "year": [2020, 2020],
-            "value": [100, 200],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["MIAMI", "BUENOS AIRES"],
+                "group": ["ESTADOS UNIDOS", "ARGENTINA"],
+                "year": [2020, 2020],
+                "value": [100, 200],
+            }
+        )
         result = apply_continent_mapping(df)
         assert (result["continent"] == "América").all()
 
     def test_unknown_country_gets_otro(self):
-        df = pd.DataFrame({
-            "name": ["CITY_X"],
-            "group": ["PAIS_INVENTADO"],
-            "year": [2020],
-            "value": [100],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["CITY_X"],
+                "group": ["PAIS_INVENTADO"],
+                "year": [2020],
+                "value": [100],
+            }
+        )
         result = apply_continent_mapping(df)
         assert result["continent"].iloc[0] == "Otro"
 
     def test_normalizes_spaces(self):
         """EMI. ARABES UNIDOS y EMI.ARABES UNIDOS deben mapearse igual."""
-        df = pd.DataFrame({
-            "name": ["DUBAI", "ABU DHABI"],
-            "group": ["EMI. ARABES UNIDOS", "EMI.ARABES UNIDOS"],
-            "year": [2020, 2020],
-            "value": [100, 200],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["DUBAI", "ABU DHABI"],
+                "group": ["EMI. ARABES UNIDOS", "EMI.ARABES UNIDOS"],
+                "year": [2020, 2020],
+                "value": [100, 200],
+            }
+        )
         result = apply_continent_mapping(df)
         assert (result["continent"] == "Medio Oriente").all()
 

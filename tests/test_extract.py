@@ -14,33 +14,35 @@ def _make_raw_df(n_rows=5, years=None, months=None, carga_ton_values=None):
         months = [1] * n_rows
     if carga_ton_values is None:
         carga_ton_values = ["100.5"] * n_rows
-    return pd.DataFrame({
-        "Año": years,
-        "Mes": months,
-        "Cod_Operador": ["OP1"] * n_rows,
-        "Operador": ["TEST AIR"] * n_rows,
-        "Grupo": ["TEST GROUP"] * n_rows,
-        "ORIG_1": ["SCL"] * n_rows,
-        "DEST_1": ["MIA"] * n_rows,
-        "ORIG_1_N": ["SANTIAGO"] * n_rows,
-        "DEST_1_N": ["MIAMI"] * n_rows,
-        "ORIG_1_PAIS": ["CHILE"] * n_rows,
-        "DEST_1_PAIS": ["ESTADOS UNIDOS"] * n_rows,
-        "ORIG_2": [None] * n_rows,
-        "DEST_2": [None] * n_rows,
-        "ORIG_2_N": [None] * n_rows,
-        "DEST_2_N": [None] * n_rows,
-        "ORIG_2_PAIS": [None] * n_rows,
-        "DEST_2_PAIS": [None] * n_rows,
-        "OPER_2": ["SALEN"] * n_rows,
-        "NAC": ["INTERNACIONAL"] * n_rows,
-        "PAX_LIB": [10.0] * n_rows,
-        "PASAJEROS": [100.0] * n_rows,
-        "CAR_LIB": [5000] * n_rows,
-        "CARGA (Ton)": carga_ton_values,
-        "CORREO": [0] * n_rows,
-        "Distancia": [1000.0] * n_rows,
-    })
+    return pd.DataFrame(
+        {
+            "Año": years,
+            "Mes": months,
+            "Cod_Operador": ["OP1"] * n_rows,
+            "Operador": ["TEST AIR"] * n_rows,
+            "Grupo": ["TEST GROUP"] * n_rows,
+            "ORIG_1": ["SCL"] * n_rows,
+            "DEST_1": ["MIA"] * n_rows,
+            "ORIG_1_N": ["SANTIAGO"] * n_rows,
+            "DEST_1_N": ["MIAMI"] * n_rows,
+            "ORIG_1_PAIS": ["CHILE"] * n_rows,
+            "DEST_1_PAIS": ["ESTADOS UNIDOS"] * n_rows,
+            "ORIG_2": [None] * n_rows,
+            "DEST_2": [None] * n_rows,
+            "ORIG_2_N": [None] * n_rows,
+            "DEST_2_N": [None] * n_rows,
+            "ORIG_2_PAIS": [None] * n_rows,
+            "DEST_2_PAIS": [None] * n_rows,
+            "OPER_2": ["SALEN"] * n_rows,
+            "NAC": ["INTERNACIONAL"] * n_rows,
+            "PAX_LIB": [10.0] * n_rows,
+            "PASAJEROS": [100.0] * n_rows,
+            "CAR_LIB": [5000] * n_rows,
+            "CARGA (Ton)": carga_ton_values,
+            "CORREO": [0] * n_rows,
+            "Distancia": [1000.0] * n_rows,
+        }
+    )
 
 
 class TestFindYearColumn:
@@ -100,7 +102,9 @@ class TestNormalize:
     def test_carga_total_formula(self):
         """CARGA_TOTAL = (CAR_LIB / 1000) + CARGA_TON."""
         df = _make_raw_df(
-            n_rows=1, years=[2023], carga_ton_values=["50.0"],
+            n_rows=1,
+            years=[2023],
+            carga_ton_values=["50.0"],
         )
         df["CAR_LIB"] = [2000]
         result = normalize(df)
@@ -130,7 +134,9 @@ class TestNormalize:
     def test_chilean_format_carga_pre2022(self):
         """Pre-2022: punto como separador de miles en CARGA (Ton)."""
         df = _make_raw_df(
-            n_rows=2, years=[2019, 2019], carga_ton_values=["1.276", "500"],
+            n_rows=2,
+            years=[2019, 2019],
+            carga_ton_values=["1.276", "500"],
         )
         result = normalize(df)
         assert result["CARGA_TON"].iloc[0] == 1276

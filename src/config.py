@@ -33,28 +33,39 @@ JEKYLL_PROJECT_MD = PROJECT_ROOT / "jekyll" / "barchart-race.md"
 VIZ_DIR = PROJECT_ROOT / "viz"
 
 # ── Google Sheets ──────────────────────────────────────
-GSHEET_URL = (
-    "https://docs.google.com/spreadsheets/d/"
-    "1U3JiVuxjDcvaIoLw9XkW3JKfuh-8_3Pc/export?format=csv&gid=499690993"
-)
+GSHEET_URL = "https://docs.google.com/spreadsheets/d/1U3JiVuxjDcvaIoLw9XkW3JKfuh-8_3Pc/export?format=csv&gid=499690993"
 
 # ── Columnas esperadas en la fuente ────────────────────
 EXPECTED_COLUMNS = [
-    "Año", "Mes", "Cod_Operador", "Operador", "Grupo",
-    "ORIG_1", "DEST_1", "ORIG_1_N", "DEST_1_N",
-    "ORIG_1_PAIS", "DEST_1_PAIS",
-    "ORIG_2", "DEST_2", "ORIG_2_N", "DEST_2_N",
-    "ORIG_2_PAIS", "DEST_2_PAIS",
-    "OPER_2", "NAC",
-    "PAX_LIB", "PASAJEROS", "CAR_LIB", "CARGA (Ton)",
-    "CORREO", "Distancia",
+    "Año",
+    "Mes",
+    "Cod_Operador",
+    "Operador",
+    "Grupo",
+    "ORIG_1",
+    "DEST_1",
+    "ORIG_1_N",
+    "DEST_1_N",
+    "ORIG_1_PAIS",
+    "DEST_1_PAIS",
+    "ORIG_2",
+    "DEST_2",
+    "ORIG_2_N",
+    "DEST_2_N",
+    "ORIG_2_PAIS",
+    "DEST_2_PAIS",
+    "OPER_2",
+    "NAC",
+    "PAX_LIB",
+    "PASAJEROS",
+    "CAR_LIB",
+    "CARGA (Ton)",
+    "CORREO",
+    "Distancia",
 ]
 
 # ── Nombres de meses en español (índice 0 vacío) ─────
-MONTH_NAMES_ES = [
-    "", "Ene", "Feb", "Mar", "Abr", "May", "Jun",
-    "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
-]
+MONTH_NAMES_ES = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 
 # ── Paleta de colores por continente ───────────────────
 CONTINENT_COLORS = {
@@ -64,7 +75,7 @@ CONTINENT_COLORS = {
     "Medio Oriente": "#eafb50",
     "Oceanía": "#aafbff",
     "África": "#f7bb5f",
-    "Antártica": "#adb0ff",   # reservado, sin uso actual
+    "Antártica": "#adb0ff",  # reservado, sin uso actual
     "Otro": "#cccccc",
 }
 

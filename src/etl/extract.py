@@ -83,9 +83,7 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
     if pre2022.any():
         carga_result[pre2022] = carga_str[pre2022].apply(_parse_chilean_int).astype(float)
     if (~pre2022).any():
-        carga_result[~pre2022] = pd.to_numeric(
-            carga_str[~pre2022].str.replace(",", "."), errors="coerce"
-        ).fillna(0)
+        carga_result[~pre2022] = pd.to_numeric(carga_str[~pre2022].str.replace(",", "."), errors="coerce").fillna(0)
     df["CARGA_TON"] = carga_result
     df = df.drop(columns=["CARGA (Ton)"])
 
@@ -95,9 +93,7 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
     if pre2022.any():
         pax_result[pre2022] = pax_str[pre2022].apply(_parse_chilean_int)
     if (~pre2022).any():
-        pax_result[~pre2022] = pd.to_numeric(
-            pax_str[~pre2022], errors="coerce"
-        ).fillna(0).astype(int)
+        pax_result[~pre2022] = pd.to_numeric(pax_str[~pre2022], errors="coerce").fillna(0).astype(int)
     df["PASAJEROS"] = pax_result
 
     df["PAX_LIB"] = df["PAX_LIB"].fillna(0).round().astype(int)
@@ -111,9 +107,7 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
         car_lib=("CAR_LIB", "sum"),
         carga_total_sum=("CARGA_TOTAL", "sum"),
     )
-    by_year["pct_car_lib"] = (
-        (by_year["car_lib"] / 1000) / by_year["carga_total_sum"] * 100
-    ).round(1)
+    by_year["pct_car_lib"] = ((by_year["car_lib"] / 1000) / by_year["carga_total_sum"] * 100).round(1)
     logger.info(
         "Proporción carga libre (CAR_LIB/1000) sobre CARGA_TOTAL por año:\n%s",
         by_year["pct_car_lib"].to_string(),

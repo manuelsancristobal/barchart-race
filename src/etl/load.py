@@ -80,7 +80,10 @@ def generate_json(
 
 
 def save_json(
-    payload: dict, perspectiva: str, dimension: str, metrica: str,
+    payload: dict,
+    perspectiva: str,
+    dimension: str,
+    metrica: str,
 ) -> str:
     """Guarda el JSON en data/processed/ y retorna el path."""
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)

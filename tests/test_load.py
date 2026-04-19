@@ -8,15 +8,25 @@ from src.etl.load import generate_json
 
 
 def _make_processed_df():
-    return pd.DataFrame({
-        "name": ["MIAMI", "MIAMI", "MIAMI", "MIAMI",
-                 "BUENOS AIRES", "BUENOS AIRES", "BUENOS AIRES", "BUENOS AIRES"],
-        "group": ["ESTADOS UNIDOS"] * 4 + ["ARGENTINA"] * 4,
-        "continent": ["América"] * 8,
-        "year": [2020, 2020, 2021, 2021, 2020, 2020, 2021, 2021],
-        "month": [1, 2, 1, 2, 1, 2, 1, 2],
-        "value": [500.0, 1000.0, 1500.0, 2500.0, 300.0, 800.0, 1200.0, 1900.0],
-    })
+    return pd.DataFrame(
+        {
+            "name": [
+                "MIAMI",
+                "MIAMI",
+                "MIAMI",
+                "MIAMI",
+                "BUENOS AIRES",
+                "BUENOS AIRES",
+                "BUENOS AIRES",
+                "BUENOS AIRES",
+            ],
+            "group": ["ESTADOS UNIDOS"] * 4 + ["ARGENTINA"] * 4,
+            "continent": ["América"] * 8,
+            "year": [2020, 2020, 2021, 2021, 2020, 2020, 2021, 2021],
+            "month": [1, 2, 1, 2, 1, 2, 1, 2],
+            "value": [500.0, 1000.0, 1500.0, 2500.0, 300.0, 800.0, 1200.0, 1900.0],
+        }
+    )
 
 
 class TestGenerateJson:
@@ -55,13 +65,15 @@ class TestGenerateJson:
         assert miami["values"] == [500.0, 1000.0, 1500.0, 2500.0]
 
     def test_structure_aerolinea(self):
-        df = pd.DataFrame({
-            "name": ["LATAM", "LATAM"],
-            "group": [None, None],
-            "year": [2020, 2021],
-            "month": [1, 1],
-            "value": [5000.0, 12000.0],
-        })
+        df = pd.DataFrame(
+            {
+                "name": ["LATAM", "LATAM"],
+                "group": [None, None],
+                "year": [2020, 2021],
+                "month": [1, 1],
+                "value": [5000.0, 12000.0],
+            }
+        )
         result = generate_json(df, "emisivo", "aerolinea", "pasajeros")
         assert result["color_map"] is None
 
