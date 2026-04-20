@@ -20,13 +20,15 @@ DPI = 150
 
 # ── Estilo global ─────────────────────────────────────────
 plt.style.use("seaborn-v0_8-whitegrid")
-plt.rcParams.update({
-    "figure.figsize": FIGSIZE,
-    "figure.dpi": DPI,
-    "axes.titlesize": 14,
-    "axes.labelsize": 12,
-    "font.size": 10,
-})
+plt.rcParams.update(
+    {
+        "figure.figsize": FIGSIZE,
+        "figure.dpi": DPI,
+        "axes.titlesize": 14,
+        "axes.labelsize": 12,
+        "font.size": 10,
+    }
+)
 
 # Mapeo país → continente (reutiliza config)
 COUNTRY_TO_CONTINENT = config.CONTINENT_MAP
@@ -38,6 +40,7 @@ MONTH_NAMES = config.MONTH_NAMES_ES
 # UTILIDADES
 # ══════════════════════════════════════════════════════════
 
+
 def load_json(filename: str) -> dict:
     """Carga un JSON procesado."""
     path = config.DATA_PROCESSED / filename
@@ -47,12 +50,7 @@ def load_json(filename: str) -> dict:
 
 def load_all_data() -> dict:
     """Carga los 8 JSONs, retorna dict indexado por nombre de archivo (sin ext)."""
-    files = [
-        f"{p}_{d}_{m}"
-        for p in config.PERSPECTIVAS
-        for d in config.DIMENSIONES
-        for m in config.METRICAS
-    ]
+    files = [f"{p}_{d}_{m}" for p in config.PERSPECTIVAS for d in config.DIMENSIONES for m in config.METRICAS]
     return {name: load_json(f"{name}.json") for name in files}
 
 
@@ -96,6 +94,7 @@ def savefig(fig, name: str):
 # ══════════════════════════════════════════════════════════
 # GRÁFICO 1: Evolución del tráfico aéreo total
 # ══════════════════════════════════════════════════════════
+
 
 def chart_01_total_traffic(all_data: dict):
     """Líneas de tráfico total anual: 4 series (emisivo/receptivo × pax/ton)."""
@@ -148,8 +147,7 @@ def chart_01_total_traffic(all_data: dict):
 
     # Anotar COVID (restricciones hasta ~oct 2022)
     ax1.axvspan(2020, 2022.83, alpha=0.15, color="gray", label="COVID-19")
-    ax1.text(2021.4, ax1.get_ylim()[1] * 0.8, "COVID-19", ha="center",
-             fontsize=9, color="gray", fontstyle="italic")
+    ax1.text(2021.4, ax1.get_ylim()[1] * 0.8, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
 
     # Detectar año incompleto al final de la serie
     all_periods = get_periods(all_data["emisivo_destinos_pasajeros"])
@@ -161,8 +159,15 @@ def chart_01_total_traffic(all_data: dict):
         ax1.axvspan(last_year - 0.5, last_year + 0.5, alpha=0.12, color="orange")
         first_mo = MONTH_NAMES[min(months_in_last_year)].lower()
         last_mo = MONTH_NAMES[max(months_in_last_year)].lower()
-        ax1.text(last_year, ax1.get_ylim()[1] * 0.85, f"{last_year}\n({first_mo}-{last_mo})",
-                 ha="center", fontsize=8, color="darkorange", fontstyle="italic")
+        ax1.text(
+            last_year,
+            ax1.get_ylim()[1] * 0.85,
+            f"{last_year}\n({first_mo}-{last_mo})",
+            ha="center",
+            fontsize=8,
+            color="darkorange",
+            fontstyle="italic",
+        )
 
     savefig(fig, "01_total_traffic")
 
@@ -171,8 +176,10 @@ def chart_01_total_traffic(all_data: dict):
 # GRÁFICO 2: Índice Herfindahl-Hirschman (concentración)
 # ══════════════════════════════════════════════════════════
 
+
 def chart_02_hhi(all_data: dict):
     """HHI anual para aerolíneas emisivo y receptivo."""
+
     def compute_hhi(data: dict) -> dict[int, float]:
         periods = get_periods(data)
         # Flujo anual por aerolínea
@@ -194,7 +201,7 @@ def chart_02_hhi(all_data: dict):
                 hhi[yr] = 0
                 continue
             shares = [(d.get(yr, 0) / total) for d in airline_yearly.values()]
-            hhi[yr] = sum(s ** 2 for s in shares) * 10000
+            hhi[yr] = sum(s**2 for s in shares) * 10000
         return hhi
 
     hhi_em = compute_hhi(all_data["emisivo_aerolinea_pasajeros"])
@@ -231,6 +238,7 @@ def chart_02_hhi(all_data: dict):
 # GRÁFICO 3: Heatmap de estacionalidad
 # ══════════════════════════════════════════════════════════
 
+
 def chart_03_seasonality(all_data: dict):
     """Heatmap año × mes del tráfico emisivo de pasajeros."""
     data = all_data["emisivo_destinos_pasajeros"]
@@ -253,10 +261,12 @@ def chart_03_seasonality(all_data: dict):
 
     fig, ax = plt.subplots(figsize=FIGSIZE)
     from matplotlib.colors import PowerNorm
+
     # PowerNorm con gamma<1 comprime los valores altos, revelando los bajos
     vmax = matrix.max()
-    im = ax.imshow(matrix, aspect="auto", cmap="YlOrRd", interpolation="nearest",
-                   norm=PowerNorm(gamma=0.4, vmin=0, vmax=vmax))
+    im = ax.imshow(
+        matrix, aspect="auto", cmap="YlOrRd", interpolation="nearest", norm=PowerNorm(gamma=0.4, vmin=0, vmax=vmax)
+    )
     cbar = fig.colorbar(im, ax=ax, shrink=0.8)
     cbar.set_label("Pasajeros")
 
@@ -278,6 +288,7 @@ def chart_03_seasonality(all_data: dict):
 # ══════════════════════════════════════════════════════════
 # GRÁFICO 4: Participación continental (stacked area)
 # ══════════════════════════════════════════════════════════
+
 
 def chart_04_continental_share(all_data: dict):
     """Stacked area: flujo anual por continente (emisivo pasajeros)."""
@@ -335,6 +346,7 @@ def chart_04_continental_share(all_data: dict):
 # GRÁFICO 5: Ciclos de vida de aerolíneas (Gantt)
 # ══════════════════════════════════════════════════════════
 
+
 def chart_05_airline_lifecycle(all_data: dict):
     """Gantt timeline: período activo de las top 20-25 aerolíneas."""
     data = all_data["emisivo_aerolinea_pasajeros"]
@@ -350,12 +362,14 @@ def chart_05_airline_lifecycle(all_data: dict):
             if val > 0:
                 active_years.add(yr)
         if active_years and total > 0:
-            airlines.append({
-                "name": entity["name"],
-                "total": total,
-                "start": min(active_years),
-                "end": max(active_years),
-            })
+            airlines.append(
+                {
+                    "name": entity["name"],
+                    "total": total,
+                    "start": min(active_years),
+                    "end": max(active_years),
+                }
+            )
 
     # Top 25 por volumen
     airlines.sort(key=lambda x: x["total"], reverse=True)
@@ -366,8 +380,16 @@ def chart_05_airline_lifecycle(all_data: dict):
 
     for i, a in enumerate(airlines):
         duration = a["end"] - a["start"] + 1
-        ax.barh(i, duration, left=a["start"], height=0.6, alpha=0.8,
-                color=plt.cm.tab20(i % 20), edgecolor="white", linewidth=0.5)
+        ax.barh(
+            i,
+            duration,
+            left=a["start"],
+            height=0.6,
+            alpha=0.8,
+            color=plt.cm.tab20(i % 20),
+            edgecolor="white",
+            linewidth=0.5,
+        )
 
     ax.set_yticks(range(len(airlines)))
     ax.set_yticklabels([a["name"] for a in airlines], fontsize=8)
@@ -382,6 +404,7 @@ def chart_05_airline_lifecycle(all_data: dict):
 # ══════════════════════════════════════════════════════════
 # GRÁFICO 6: Pasajeros vs Carga (scatter log-log)
 # ══════════════════════════════════════════════════════════
+
 
 def chart_06_pax_vs_cargo(all_data: dict):
     """Scatter log-log: acumulado final pax vs ton por destino."""
@@ -414,8 +437,7 @@ def chart_06_pax_vs_cargo(all_data: dict):
     # Etiquetar top 15 por pasajeros
     points.sort(key=lambda x: x[1], reverse=True)
     for name, pax, ton, _ in points[:15]:
-        ax.annotate(name.title(), (pax, ton), fontsize=7,
-                    xytext=(5, 5), textcoords="offset points", alpha=0.8)
+        ax.annotate(name.title(), (pax, ton), fontsize=7, xytext=(5, 5), textcoords="offset points", alpha=0.8)
 
     ax.set_xscale("log")
     ax.set_yscale("log")
@@ -425,6 +447,7 @@ def chart_06_pax_vs_cargo(all_data: dict):
 
     # Leyenda de continentes
     from matplotlib.lines import Line2D
+
     legend_elements = [
         Line2D([0], [0], marker="o", color="w", markerfacecolor=c, markersize=8, label=cont)
         for cont, c in CONTINENT_COLORS.items()
@@ -438,6 +461,7 @@ def chart_06_pax_vs_cargo(all_data: dict):
 # ══════════════════════════════════════════════════════════
 # GRÁFICO 7: Crecimiento interanual Top 5 destinos
 # ══════════════════════════════════════════════════════════
+
 
 def chart_07_yoy_growth(all_data: dict):
     """YoY % growth del flujo anual de los top 5 destinos emisivo pax."""
@@ -476,8 +500,7 @@ def chart_07_yoy_growth(all_data: dict):
                 yoy_years.append(years[i])
                 yoy_vals.append(growth)
 
-        ax.plot(yoy_years, yoy_vals, linewidth=1.5, color=color,
-                label=name.title(), alpha=0.8)
+        ax.plot(yoy_years, yoy_vals, linewidth=1.5, color=color, label=name.title(), alpha=0.8)
 
     ax.axhline(y=0, color="black", linewidth=0.5, linestyle="-")
     ax.axvspan(2020, 2021, alpha=0.15, color="gray")
@@ -494,44 +517,45 @@ def chart_07_yoy_growth(all_data: dict):
 # CAPTIONS
 # ══════════════════════════════════════════════════════════
 
+
 def generate_captions():
     """Genera captions.json con textos sugeridos para la página Jekyll."""
     captions = {
         "01_total_traffic": {
             "titulo": "Evolución del tráfico aéreo internacional de Chile",
             "contexto": "Este gráfico muestra el volumen total de pasajeros y carga del tráfico aéreo internacional de Chile entre 1984 y 2026, distinguiendo entre tráfico emisivo (desde Chile) y receptivo (hacia Chile). El doble eje permite comparar la evolución de pasajeros y tonelaje simultáneamente.",
-            "hallazgos": "El tráfico de pasajeros muestra un crecimiento sostenido con una caída dramática en 2020 por COVID-19. La recuperación post-pandemia es notable, especialmente en el tráfico emisivo. El tonelaje tiende a seguir patrones similares pero con menor volatilidad, sugiriendo que la carga aérea es más resiliente a shocks."
+            "hallazgos": "El tráfico de pasajeros muestra un crecimiento sostenido con una caída dramática en 2020 por COVID-19. La recuperación post-pandemia es notable, especialmente en el tráfico emisivo. El tonelaje tiende a seguir patrones similares pero con menor volatilidad, sugiriendo que la carga aérea es más resiliente a shocks.",
         },
         "02_hhi_concentration": {
             "titulo": "Concentración de mercado: Índice Herfindahl-Hirschman",
             "contexto": "El Índice HHI mide la concentración de mercado sumando los cuadrados de las cuotas de participación de cada aerolínea. Valores bajo 1500 indican un mercado competitivo; entre 1500 y 2500, moderadamente concentrado; sobre 2500, altamente concentrado.",
-            "hallazgos": "El mercado aéreo chileno ha transitado por fases: alta concentración inicial (dominancia de pocas aerolíneas estatales/legacy), liberalización progresiva, y la entrada de operadores low-cost como SKY y JetSMART que han intensificado la competencia en años recientes."
+            "hallazgos": "El mercado aéreo chileno ha transitado por fases: alta concentración inicial (dominancia de pocas aerolíneas estatales/legacy), liberalización progresiva, y la entrada de operadores low-cost como SKY y JetSMART que han intensificado la competencia en años recientes.",
         },
         "03_seasonality_heatmap": {
             "titulo": "Estacionalidad del tráfico aéreo emisivo",
             "contexto": "El heatmap muestra el flujo mensual de pasajeros emisivos a lo largo de cada año. Los colores más intensos indican mayor tráfico. La estructura año × mes revela patrones estacionales recurrentes.",
-            "hallazgos": "Se observa un patrón estacional claro con peaks en enero (verano austral) y julio (vacaciones de invierno). La amplitud estacional crece con el tiempo, reflejando un mercado más grande. Los años 2020-2021 aparecen como franjas claras, evidenciando el impacto COVID."
+            "hallazgos": "Se observa un patrón estacional claro con peaks en enero (verano austral) y julio (vacaciones de invierno). La amplitud estacional crece con el tiempo, reflejando un mercado más grande. Los años 2020-2021 aparecen como franjas claras, evidenciando el impacto COVID.",
         },
         "04_continental_share": {
             "titulo": "Participación continental en el tráfico emisivo",
             "contexto": "Muestra cómo se distribuye el tráfico emisivo de pasajeros entre los distintos continentes de destino, tanto en valores absolutos como en participación porcentual.",
-            "hallazgos": "América domina ampliamente como destino del tráfico emisivo chileno. Sin embargo, la participación de Europa ha crecido de forma sostenida, mientras que Oceanía y Asia mantienen nichos menores pero crecientes. La composición continental revela la diversificación progresiva de las rutas internacionales."
+            "hallazgos": "América domina ampliamente como destino del tráfico emisivo chileno. Sin embargo, la participación de Europa ha crecido de forma sostenida, mientras que Oceanía y Asia mantienen nichos menores pero crecientes. La composición continental revela la diversificación progresiva de las rutas internacionales.",
         },
         "05_airline_lifecycle": {
             "titulo": "Ciclos de vida de las principales aerolíneas",
             "contexto": "Diagrama de Gantt que muestra el período de actividad de las 25 aerolíneas con mayor volumen de pasajeros emisivos. La longitud de cada barra indica el tiempo de operación.",
-            "hallazgos": "Se identifican oleadas de entrada/salida de aerolíneas: las legacy carriers operan durante décadas, mientras que muchas aerolíneas tienen ciclos cortos. Las entradas recientes de low-cost (SKY, JetSMART) marcan una nueva era competitiva."
+            "hallazgos": "Se identifican oleadas de entrada/salida de aerolíneas: las legacy carriers operan durante décadas, mientras que muchas aerolíneas tienen ciclos cortos. Las entradas recientes de low-cost (SKY, JetSMART) marcan una nueva era competitiva.",
         },
         "06_pax_vs_cargo": {
             "titulo": "Relación pasajeros vs. carga por destino",
             "contexto": "Scatter plot en escala logarítmica que compara el acumulado total de pasajeros y tonelaje por cada destino emisivo. Cada punto es una ciudad, coloreada por continente.",
-            "hallazgos": "La mayoría de los destinos siguen una correlación positiva entre pasajeros y carga, pero existen outliers notables: destinos con alta carga relativa sugieren hubs logísticos/comerciales, mientras que destinos con alto flujo de pasajeros pero baja carga indican rutas predominantemente turísticas."
+            "hallazgos": "La mayoría de los destinos siguen una correlación positiva entre pasajeros y carga, pero existen outliers notables: destinos con alta carga relativa sugieren hubs logísticos/comerciales, mientras que destinos con alto flujo de pasajeros pero baja carga indican rutas predominantemente turísticas.",
         },
         "07_yoy_growth_top5": {
             "titulo": "Crecimiento interanual: Top 5 destinos",
             "contexto": "Muestra la tasa de crecimiento año a año del flujo de pasajeros de los 5 destinos emisivos más importantes. Este análisis revela la dinámica oculta por los valores acumulados del barchart race.",
-            "hallazgos": "Las tasas de crecimiento revelan fases de aceleración y desaceleración no visibles en datos acumulados. El crash COVID genera caídas extremas seguidas de rebounds igualmente intensos. La velocidad de recuperación post-COVID varía significativamente entre destinos."
-        }
+            "hallazgos": "Las tasas de crecimiento revelan fases de aceleración y desaceleración no visibles en datos acumulados. El crash COVID genera caídas extremas seguidas de rebounds igualmente intensos. La velocidad de recuperación post-COVID varía significativamente entre destinos.",
+        },
     }
 
     path = CHARTS_DIR / "captions.json"
@@ -543,6 +567,7 @@ def generate_captions():
 # ══════════════════════════════════════════════════════════
 # MAIN
 # ══════════════════════════════════════════════════════════
+
 
 def main():
     print("Cargando datos...")

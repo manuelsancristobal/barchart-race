@@ -17,10 +17,7 @@ CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 # Ruta al repo Jekyll local (obligatorio definir vía variable de entorno)
 _jekyll_env = os.getenv("JEKYLL_REPO")
 if not _jekyll_env:
-    raise OSError(
-        "Variable JEKYLL_REPO no definida. "
-        "Exporta la ruta al repo Jekyll: export JEKYLL_REPO=/path/to/repo"
-    )
+    raise OSError("Variable JEKYLL_REPO no definida. Exporta la ruta al repo Jekyll: export JEKYLL_REPO=/path/to/repo")
 JEKYLL_REPO = Path(_jekyll_env)
 JEKYLL_BASE = JEKYLL_REPO / "proyectos" / "barchart-race"
 JEKYLL_DATA_DIR = JEKYLL_BASE / "assets" / "data"
