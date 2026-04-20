@@ -18,12 +18,14 @@ CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 _jekyll_env = os.getenv("JEKYLL_REPO")
 if not _jekyll_env:
     import warnings
+
     warnings.warn(
         "Variable JEKYLL_REPO no definida. Usando directorio temporal. "
         "Exporta la ruta al repo Jekyll para uso real: export JEKYLL_REPO=/path/to/repo",
         stacklevel=1,
     )
     import tempfile
+
     _jekyll_env = tempfile.mkdtemp(prefix="jekyll_fallback_")
 JEKYLL_REPO = Path(_jekyll_env)
 JEKYLL_BASE = JEKYLL_REPO / "proyectos" / "barchart-race"
