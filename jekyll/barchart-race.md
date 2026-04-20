@@ -14,16 +14,15 @@ tech_stack:
 
 Este proyecto es un ETL combinado con una animación de la evolución histórica del mercado aéreo internacional en Chile, incluye visualizaciones del tráfico emisivo y receptivo, tanto por destinos como por aerolíneas, y distingue cantidad de pasajeros viajados y el tonelaje de carga trasladado.
 
-{::nomarkdown}
-<div style="position: relative; width: 100%; padding-bottom: 75%; overflow: hidden;">
+<div style="position: relative; width: 100%; padding-bottom: 62%; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
   <iframe
-    src="./viz.html"
+    src="/proyectos/barchart-race/viz.html"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
     loading="lazy"
-    title="Bar Chart Race: Movimiento Aéreo Internacional de Chile">
+    title="Bar Chart Race: Movimiento Aéreo Internacional de Chile"
+    allowfullscreen>
   </iframe>
 </div>
-{:/nomarkdown}
 
 ## Análisis complementario
 
