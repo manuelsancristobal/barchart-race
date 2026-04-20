@@ -17,7 +17,7 @@ CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 # Ruta al repo Jekyll local (obligatorio definir vía variable de entorno)
 _jekyll_env = os.getenv("JEKYLL_REPO")
 if not _jekyll_env:
-    raise EnvironmentError(
+    raise OSError(
         "Variable JEKYLL_REPO no definida. "
         "Exporta la ruta al repo Jekyll: export JEKYLL_REPO=/path/to/repo"
     )
