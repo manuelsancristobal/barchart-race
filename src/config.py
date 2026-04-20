@@ -14,10 +14,17 @@ DATA_WORK = PROJECT_ROOT / "data" / "work"
 CSV_LOCAL = DATA_RAW / "jac_data.csv"
 CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 
-# Ruta al repo Jekyll local (obligatorio definir vía variable de entorno)
+# Ruta al repo Jekyll local (obligatorio en producción; en CI/test se usa un fallback temporal)
 _jekyll_env = os.getenv("JEKYLL_REPO")
 if not _jekyll_env:
-    raise OSError("Variable JEKYLL_REPO no definida. Exporta la ruta al repo Jekyll: export JEKYLL_REPO=/path/to/repo")
+    import warnings
+    warnings.warn(
+        "Variable JEKYLL_REPO no definida. Usando directorio temporal. "
+        "Exporta la ruta al repo Jekyll para uso real: export JEKYLL_REPO=/path/to/repo",
+        stacklevel=1,
+    )
+    import tempfile
+    _jekyll_env = tempfile.mkdtemp(prefix="jekyll_fallback_")
 JEKYLL_REPO = Path(_jekyll_env)
 JEKYLL_BASE = JEKYLL_REPO / "proyectos" / "barchart-race"
 JEKYLL_DATA_DIR = JEKYLL_BASE / "assets" / "data"

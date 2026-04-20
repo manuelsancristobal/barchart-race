@@ -33,7 +33,10 @@ jobs:
         ruff format --check src/ scripts/ tests/
 
     - name: Run tests with pytest
+      env:
+        JEKYLL_REPO: /tmp/jekyll_stub
       run: |
+        mkdir -p "$JEKYLL_REPO"
         pytest tests/ -v --cov=src --cov-report=xml
 
     - name: Upload coverage to Codecov
