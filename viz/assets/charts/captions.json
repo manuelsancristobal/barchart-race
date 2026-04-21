@@ -9,15 +9,25 @@
     "contexto": "El Índice HHI mide la concentración de mercado sumando los cuadrados de las cuotas de participación de cada aerolínea. Valores bajo 1500 indican un mercado competitivo; entre 1500 y 2500, moderadamente concentrado; sobre 2500, altamente concentrado.",
     "hallazgos": "El mercado aéreo chileno ha transitado por fases: alta concentración inicial (dominancia de pocas aerolíneas estatales/legacy), liberalización progresiva, y la entrada de operadores low-cost como SKY y JetSMART que han intensificado la competencia en años recientes."
   },
-  "03_seasonality_heatmap": {
-    "titulo": "Estacionalidad del tráfico aéreo emisivo",
-    "contexto": "El heatmap muestra el flujo mensual de pasajeros emisivos a lo largo de cada año. Los colores más intensos indican mayor tráfico. La estructura año × mes revela patrones estacionales recurrentes.",
-    "hallazgos": "Se observa un patrón estacional claro con peaks en enero (verano austral) y julio (vacaciones de invierno). La amplitud estacional crece con el tiempo, reflejando un mercado más grande. Los años 2020-2021 aparecen como franjas claras, evidenciando el impacto COVID."
+  "03a_seasonality_pax": {
+    "titulo": "Estacionalidad del tráfico de pasajeros",
+    "contexto": "Heatmaps comparativos del flujo mensual de pasajeros emisivos y receptivos a lo largo de cada año. Los colores más intensos indican mayor tráfico. La estructura año × mes revela patrones estacionales recurrentes.",
+    "hallazgos": ""
   },
-  "04_continental_share": {
+  "03b_seasonality_ton": {
+    "titulo": "Estacionalidad del tráfico de carga",
+    "contexto": "Heatmaps comparativos del tonelaje mensual emisivo y receptivo. Permite identificar la estacionalidad del transporte de carga y compararla con los patrones de pasajeros.",
+    "hallazgos": ""
+  },
+  "04a_continental_share_emisivo": {
     "titulo": "Participación continental en el tráfico emisivo",
     "contexto": "Muestra cómo se distribuye el tráfico emisivo de pasajeros entre los distintos continentes de destino, tanto en valores absolutos como en participación porcentual.",
-    "hallazgos": "América domina ampliamente como destino del tráfico emisivo chileno. Sin embargo, la participación de Europa ha crecido de forma sostenida, mientras que Oceanía y Asia mantienen nichos menores pero crecientes. La composición continental revela la diversificación progresiva de las rutas internacionales."
+    "hallazgos": ""
+  },
+  "04b_continental_share_receptivo": {
+    "titulo": "Participación continental en el tráfico receptivo",
+    "contexto": "Muestra cómo se distribuye el tráfico receptivo de pasajeros según el continente de origen, tanto en valores absolutos como en participación porcentual.",
+    "hallazgos": ""
   },
   "05_airline_lifecycle": {
     "titulo": "Ciclos de vida de las principales aerolíneas",

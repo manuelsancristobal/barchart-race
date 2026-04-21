@@ -204,23 +204,26 @@ def chart_02_hhi(all_data: dict):
             hhi[yr] = sum(s**2 for s in shares) * 10000
         return hhi
 
-    hhi_em = compute_hhi(all_data["emisivo_aerolinea_pasajeros"])
-    hhi_re = compute_hhi(all_data["receptivo_aerolinea_pasajeros"])
+    hhi_em_pax = compute_hhi(all_data["emisivo_aerolinea_pasajeros"])
+    hhi_re_pax = compute_hhi(all_data["receptivo_aerolinea_pasajeros"])
+    hhi_em_ton = compute_hhi(all_data["emisivo_aerolinea_tonelaje"])
+    hhi_re_ton = compute_hhi(all_data["receptivo_aerolinea_tonelaje"])
 
     fig, ax = plt.subplots(figsize=FIGSIZE)
 
-    years_em = list(hhi_em.keys())
-    vals_em = list(hhi_em.values())
-    years_re = list(hhi_re.keys())
-    vals_re = list(hhi_re.values())
+    # Pasajeros (líneas sólidas)
+    ax.plot(list(hhi_em_pax.keys()), list(hhi_em_pax.values()), linewidth=2, color="#2171b5", label="Emisivo – Pasajeros")
+    ax.plot(list(hhi_re_pax.keys()), list(hhi_re_pax.values()), linewidth=2, color="#cb181d", label="Receptivo – Pasajeros")
 
-    ax.plot(years_em, vals_em, linewidth=2, color="#2171b5", label="Emisivo")
-    ax.plot(years_re, vals_re, linewidth=2, color="#cb181d", label="Receptivo")
+    # Tonelaje (líneas punteadas)
+    ax.plot(list(hhi_em_ton.keys()), list(hhi_em_ton.values()), linewidth=2, color="#2171b5", linestyle="--", alpha=0.7, label="Emisivo – Tonelaje")
+    ax.plot(list(hhi_re_ton.keys()), list(hhi_re_ton.values()), linewidth=2, color="#cb181d", linestyle="--", alpha=0.7, label="Receptivo – Tonelaje")
 
     # Bandas de referencia HHI
+    all_vals = list(hhi_em_pax.values()) + list(hhi_re_pax.values()) + list(hhi_em_ton.values()) + list(hhi_re_ton.values())
     ax.axhspan(0, 1500, alpha=0.08, color="green")
     ax.axhspan(1500, 2500, alpha=0.08, color="orange")
-    ax.axhspan(2500, max(max(vals_em), max(vals_re)) * 1.1, alpha=0.08, color="red")
+    ax.axhspan(2500, max(all_vals) * 1.1, alpha=0.08, color="red")
 
     ax.text(1985, 750, "Competitivo (<1500)", fontsize=9, color="green", alpha=0.7)
     ax.text(1985, 2000, "Moderado (1500–2500)", fontsize=9, color="orange", alpha=0.7)
@@ -231,6 +234,30 @@ def chart_02_hhi(all_data: dict):
     ax.set_title("Concentración de mercado aéreo: Índice Herfindahl-Hirschman (1984–2026)")
     ax.legend(loc="upper right")
 
+    # Anotar COVID (restricciones hasta ~oct 2022)
+    ax.axvspan(2020, 2022.83, alpha=0.15, color="gray")
+    ax.text(2021.4, ax.get_ylim()[1] * 0.9, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
+
+    # Detectar año incompleto al final de la serie
+    all_periods = get_periods(all_data["emisivo_aerolinea_pasajeros"])
+    last_year = all_periods[-1][0]
+    first_year = all_periods[0][0]
+    months_in_last_year = [mo for yr, mo in all_periods if yr == last_year]
+
+    if len(months_in_last_year) < 12 and last_year != first_year:
+        ax.axvspan(last_year - 0.5, last_year + 0.5, alpha=0.12, color="orange")
+        first_mo = MONTH_NAMES[min(months_in_last_year)].lower()
+        last_mo = MONTH_NAMES[max(months_in_last_year)].lower()
+        ax.text(
+            last_year,
+            ax.get_ylim()[1] * 0.95,
+            f"{last_year}\n({first_mo}-{last_mo})",
+            ha="center",
+            fontsize=8,
+            color="darkorange",
+            fontstyle="italic",
+        )
+
     savefig(fig, "02_hhi_concentration")
 
 
@@ -240,49 +267,62 @@ def chart_02_hhi(all_data: dict):
 
 
 def chart_03_seasonality(all_data: dict):
-    """Heatmap año × mes del tráfico emisivo de pasajeros."""
-    data = all_data["emisivo_destinos_pasajeros"]
-    periods = get_periods(data)
-
-    # Flujo mensual total
-    monthly: dict[tuple[int, int], float] = {}
-    for entity in data["entities"]:
-        flow = decumulate(entity["values"])
-        for (yr, mo), val in zip(periods, flow):
-            monthly[(yr, mo)] = monthly.get((yr, mo), 0) + val
-
-    years = sorted(set(yr for yr, _ in monthly))
-    months = list(range(1, 13))
-
-    matrix = np.zeros((len(years), 12))
-    for i, yr in enumerate(years):
-        for j, mo in enumerate(months):
-            matrix[i, j] = monthly.get((yr, mo), 0)
-
-    fig, ax = plt.subplots(figsize=FIGSIZE)
+    """Heatmaps año × mes: pasajeros y tonelaje, emisivo vs receptivo."""
     from matplotlib.colors import PowerNorm
 
-    # PowerNorm con gamma<1 comprime los valores altos, revelando los bajos
-    vmax = matrix.max()
-    im = ax.imshow(
-        matrix, aspect="auto", cmap="YlOrRd", interpolation="nearest", norm=PowerNorm(gamma=0.4, vmin=0, vmax=vmax)
-    )
-    cbar = fig.colorbar(im, ax=ax, shrink=0.8)
-    cbar.set_label("Pasajeros")
+    def _build_monthly_matrix(data: dict) -> tuple[np.ndarray, list[int]]:
+        """Construye matriz año × mes con flujo mensual total."""
+        periods = get_periods(data)
+        monthly: dict[tuple[int, int], float] = {}
+        for entity in data["entities"]:
+            flow = decumulate(entity["values"])
+            for (yr, mo), val in zip(periods, flow):
+                monthly[(yr, mo)] = monthly.get((yr, mo), 0) + val
+        years = sorted(set(yr for yr, _ in monthly))
+        matrix = np.zeros((len(years), 12))
+        for i, yr in enumerate(years):
+            for j, mo in enumerate(range(1, 13)):
+                matrix[i, j] = monthly.get((yr, mo), 0)
+        return matrix, years
 
-    ax.set_xticks(range(12))
-    ax.set_xticklabels(MONTH_NAMES[1:])
+    def _plot_heatmap(ax, matrix, years, title, cbar_label):
+        """Renderiza un heatmap en el axes dado."""
+        vmax = matrix.max()
+        im = ax.imshow(
+            matrix, aspect="auto", cmap="YlOrRd", interpolation="nearest", norm=PowerNorm(gamma=0.4, vmin=0, vmax=vmax)
+        )
+        cbar = ax.figure.colorbar(im, ax=ax, shrink=0.8)
+        cbar.set_label(cbar_label)
+        ax.set_xticks(range(12))
+        ax.set_xticklabels(MONTH_NAMES[1:], fontsize=8)
+        yticks = [i for i, yr in enumerate(years) if yr % 5 == 0]
+        ax.set_yticks(yticks)
+        ax.set_yticklabels([years[i] for i in yticks])
+        ax.set_title(title, fontsize=12)
+        ax.set_xlabel("Mes")
+        ax.set_ylabel("Año")
 
-    # Mostrar solo cada 5 años en eje Y
-    yticks = [i for i, yr in enumerate(years) if yr % 5 == 0]
-    ax.set_yticks(yticks)
-    ax.set_yticklabels([years[i] for i in yticks])
+    # ── 03a: Pasajeros emisivo vs receptivo ──
+    mat_em_pax, years = _build_monthly_matrix(all_data["emisivo_destinos_pasajeros"])
+    mat_re_pax, _ = _build_monthly_matrix(all_data["receptivo_destinos_pasajeros"])
 
-    ax.set_title("Estacionalidad del tráfico aéreo emisivo de pasajeros (1984–2026)")
-    ax.set_xlabel("Mes")
-    ax.set_ylabel("Año")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 7))
+    _plot_heatmap(ax1, mat_em_pax, years, "Emisivo", "Pasajeros")
+    _plot_heatmap(ax2, mat_re_pax, years, "Receptivo", "Pasajeros")
+    fig.suptitle("Estacionalidad del tráfico de pasajeros (1984–2026)", fontsize=14, y=1.02)
+    fig.tight_layout()
+    savefig(fig, "03a_seasonality_pax")
 
-    savefig(fig, "03_seasonality_heatmap")
+    # ── 03b: Tonelaje emisivo vs receptivo ──
+    mat_em_ton, _ = _build_monthly_matrix(all_data["emisivo_destinos_tonelaje"])
+    mat_re_ton, _ = _build_monthly_matrix(all_data["receptivo_destinos_tonelaje"])
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 7))
+    _plot_heatmap(ax1, mat_em_ton, years, "Emisivo", "Tonelaje")
+    _plot_heatmap(ax2, mat_re_ton, years, "Receptivo", "Tonelaje")
+    fig.suptitle("Estacionalidad del tráfico de carga (1984–2026)", fontsize=14, y=1.02)
+    fig.tight_layout()
+    savefig(fig, "03b_seasonality_ton")
 
 
 # ══════════════════════════════════════════════════════════
@@ -291,55 +331,64 @@ def chart_03_seasonality(all_data: dict):
 
 
 def chart_04_continental_share(all_data: dict):
-    """Stacked area: flujo anual por continente (emisivo pasajeros)."""
-    data = all_data["emisivo_destinos_pasajeros"]
-    periods = get_periods(data)
+    """Stacked area: flujo anual por continente, emisivo y receptivo."""
 
-    # Flujo anual por continente
-    continent_yearly: dict[str, dict[int, float]] = {}
-    for entity in data["entities"]:
-        flow = decumulate(entity["values"])
-        continent = country_to_continent(entity["group"])
-        if continent not in continent_yearly:
-            continent_yearly[continent] = {}
-        for (yr, _), val in zip(periods, flow):
-            continent_yearly[continent][yr] = continent_yearly[continent].get(yr, 0) + val
+    def _build_continent_matrix(data: dict) -> tuple[np.ndarray, list[int], list[str], list[str]]:
+        """Agrega flujo anual por continente. Retorna (values, years, continents, colors)."""
+        periods = get_periods(data)
+        continent_yearly: dict[str, dict[int, float]] = {}
+        for entity in data["entities"]:
+            flow = decumulate(entity["values"])
+            continent = country_to_continent(entity["group"])
+            if continent not in continent_yearly:
+                continent_yearly[continent] = {}
+            for (yr, _), val in zip(periods, flow):
+                continent_yearly[continent][yr] = continent_yearly[continent].get(yr, 0) + val
+        years = sorted(set(yr for d in continent_yearly.values() for yr in d))
+        totals = {c: sum(d.values()) for c, d in continent_yearly.items()}
+        continents = sorted(totals, key=totals.get, reverse=True)
+        values = np.array([[continent_yearly[c].get(yr, 0) for yr in years] for c in continents])
+        colors = [CONTINENT_COLORS.get(c, "#cccccc") for c in continents]
+        return values, years, continents, colors
 
-    years = sorted(set(yr for d in continent_yearly.values() for yr in d))
+    def _plot_stackplot_pair(ax1, ax2, values, years, continents, colors, perspective: str):
+        """Renderiza par absoluto + porcentual con anotación COVID."""
+        ax1.stackplot(years, values, labels=continents, colors=colors, alpha=0.85)
+        ax1.set_title(f"Tráfico {perspective} por continente (absoluto)")
+        ax1.set_xlabel("Año")
+        ax1.set_ylabel("Pasajeros")
+        ax1.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x / 1e6:.1f}M"))
+        ax1.legend(loc="upper left", fontsize=8)
 
-    # Ordenar continentes por total descendente
-    totals = {c: sum(d.values()) for c, d in continent_yearly.items()}
-    continents = sorted(totals, key=totals.get, reverse=True)
+        totals_by_year = values.sum(axis=0)
+        totals_by_year[totals_by_year == 0] = 1
+        pct = values / totals_by_year * 100
+        ax2.stackplot(years, pct, labels=continents, colors=colors, alpha=0.85)
+        ax2.set_title(f"Tráfico {perspective} por continente (%)")
+        ax2.set_xlabel("Año")
+        ax2.set_ylabel("Participación (%)")
+        ax2.set_ylim(0, 100)
+        ax2.legend(loc="upper left", fontsize=8)
 
-    # Matriz para stackplot
-    values = np.array([[continent_yearly[c].get(yr, 0) for yr in years] for c in continents])
-    colors = [CONTINENT_COLORS.get(c, "#cccccc") for c in continents]
+        for ax in (ax1, ax2):
+            ax.axvspan(2020, 2022.83, alpha=0.15, color="gray")
+            ax.text(2021.4, ax.get_ylim()[1] * 0.9, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
 
+    # ── 04a: Emisivo ──
+    val_em, yrs_em, conts_em, cols_em = _build_continent_matrix(all_data["emisivo_destinos_pasajeros"])
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 7))
-
-    # Absoluto
-    ax1.stackplot(years, values, labels=continents, colors=colors, alpha=0.85)
-    ax1.set_title("Tráfico emisivo por continente (absoluto)")
-    ax1.set_xlabel("Año")
-    ax1.set_ylabel("Pasajeros")
-    ax1.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x / 1e6:.1f}M"))
-    ax1.legend(loc="upper left", fontsize=8)
-
-    # Porcentual
-    totals_by_year = values.sum(axis=0)
-    totals_by_year[totals_by_year == 0] = 1  # evitar div/0
-    pct = values / totals_by_year * 100
-    ax2.stackplot(years, pct, labels=continents, colors=colors, alpha=0.85)
-    ax2.set_title("Tráfico emisivo por continente (%)")
-    ax2.set_xlabel("Año")
-    ax2.set_ylabel("Participación (%)")
-    ax2.set_ylim(0, 100)
-    ax2.legend(loc="upper left", fontsize=8)
-
+    _plot_stackplot_pair(ax1, ax2, val_em, yrs_em, conts_em, cols_em, "emisivo")
     fig.suptitle("Participación continental en el tráfico aéreo emisivo (1984–2026)", fontsize=14, y=1.02)
     fig.tight_layout()
+    savefig(fig, "04a_continental_share_emisivo")
 
-    savefig(fig, "04_continental_share")
+    # ── 04b: Receptivo ──
+    val_re, yrs_re, conts_re, cols_re = _build_continent_matrix(all_data["receptivo_destinos_pasajeros"])
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 7))
+    _plot_stackplot_pair(ax1, ax2, val_re, yrs_re, conts_re, cols_re, "receptivo")
+    fig.suptitle("Participación continental en el tráfico aéreo receptivo (1984–2026)", fontsize=14, y=1.02)
+    fig.tight_layout()
+    savefig(fig, "04b_continental_share_receptivo")
 
 
 # ══════════════════════════════════════════════════════════
@@ -397,6 +446,10 @@ def chart_05_airline_lifecycle(all_data: dict):
     ax.set_title("Ciclos de vida: Top 25 aerolíneas por volumen emisivo de pasajeros")
     ax.invert_yaxis()
     ax.set_xlim(1984, 2027)
+
+    # Anotar COVID (restricciones hasta ~oct 2022)
+    ax.axvspan(2020, 2022.83, alpha=0.15, color="gray")
+    ax.text(2021.4, -1.5, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
 
     savefig(fig, "05_airline_lifecycle")
 
@@ -503,7 +556,11 @@ def chart_07_yoy_growth(all_data: dict):
         ax.plot(yoy_years, yoy_vals, linewidth=1.5, color=color, label=name.title(), alpha=0.8)
 
     ax.axhline(y=0, color="black", linewidth=0.5, linestyle="-")
-    ax.axvspan(2020, 2021, alpha=0.15, color="gray")
+
+    # Anotar COVID (restricciones hasta ~oct 2022)
+    ax.axvspan(2020, 2022.83, alpha=0.15, color="gray")
+    ax.text(2021.4, ax.get_ylim()[1] * 0.9, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
+
     ax.set_xlabel("Año")
     ax.set_ylabel("Crecimiento interanual (%)")
     ax.set_title("Crecimiento interanual: Top 5 destinos emisivos por pasajeros")
@@ -531,15 +588,25 @@ def generate_captions():
             "contexto": "El Índice HHI mide la concentración de mercado sumando los cuadrados de las cuotas de participación de cada aerolínea. Valores bajo 1500 indican un mercado competitivo; entre 1500 y 2500, moderadamente concentrado; sobre 2500, altamente concentrado.",
             "hallazgos": "El mercado aéreo chileno ha transitado por fases: alta concentración inicial (dominancia de pocas aerolíneas estatales/legacy), liberalización progresiva, y la entrada de operadores low-cost como SKY y JetSMART que han intensificado la competencia en años recientes.",
         },
-        "03_seasonality_heatmap": {
-            "titulo": "Estacionalidad del tráfico aéreo emisivo",
-            "contexto": "El heatmap muestra el flujo mensual de pasajeros emisivos a lo largo de cada año. Los colores más intensos indican mayor tráfico. La estructura año × mes revela patrones estacionales recurrentes.",
-            "hallazgos": "Se observa un patrón estacional claro con peaks en enero (verano austral) y julio (vacaciones de invierno). La amplitud estacional crece con el tiempo, reflejando un mercado más grande. Los años 2020-2021 aparecen como franjas claras, evidenciando el impacto COVID.",
+        "03a_seasonality_pax": {
+            "titulo": "Estacionalidad del tráfico de pasajeros",
+            "contexto": "Heatmaps comparativos del flujo mensual de pasajeros emisivos y receptivos a lo largo de cada año. Los colores más intensos indican mayor tráfico. La estructura año × mes revela patrones estacionales recurrentes.",
+            "hallazgos": "",
         },
-        "04_continental_share": {
+        "03b_seasonality_ton": {
+            "titulo": "Estacionalidad del tráfico de carga",
+            "contexto": "Heatmaps comparativos del tonelaje mensual emisivo y receptivo. Permite identificar la estacionalidad del transporte de carga y compararla con los patrones de pasajeros.",
+            "hallazgos": "",
+        },
+        "04a_continental_share_emisivo": {
             "titulo": "Participación continental en el tráfico emisivo",
             "contexto": "Muestra cómo se distribuye el tráfico emisivo de pasajeros entre los distintos continentes de destino, tanto en valores absolutos como en participación porcentual.",
-            "hallazgos": "América domina ampliamente como destino del tráfico emisivo chileno. Sin embargo, la participación de Europa ha crecido de forma sostenida, mientras que Oceanía y Asia mantienen nichos menores pero crecientes. La composición continental revela la diversificación progresiva de las rutas internacionales.",
+            "hallazgos": "",
+        },
+        "04b_continental_share_receptivo": {
+            "titulo": "Participación continental en el tráfico receptivo",
+            "contexto": "Muestra cómo se distribuye el tráfico receptivo de pasajeros según el continente de origen, tanto en valores absolutos como en participación porcentual.",
+            "hallazgos": "",
         },
         "05_airline_lifecycle": {
             "titulo": "Ciclos de vida de las principales aerolíneas",
