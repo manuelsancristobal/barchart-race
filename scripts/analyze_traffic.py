@@ -212,15 +212,37 @@ def chart_02_hhi(all_data: dict):
     fig, ax = plt.subplots(figsize=FIGSIZE)
 
     # Pasajeros (líneas sólidas)
-    ax.plot(list(hhi_em_pax.keys()), list(hhi_em_pax.values()), linewidth=2, color="#2171b5", label="Emisivo – Pasajeros")
-    ax.plot(list(hhi_re_pax.keys()), list(hhi_re_pax.values()), linewidth=2, color="#cb181d", label="Receptivo – Pasajeros")
+    ax.plot(
+        list(hhi_em_pax.keys()), list(hhi_em_pax.values()), linewidth=2, color="#2171b5", label="Emisivo – Pasajeros"
+    )
+    ax.plot(
+        list(hhi_re_pax.keys()), list(hhi_re_pax.values()), linewidth=2, color="#cb181d", label="Receptivo – Pasajeros"
+    )
 
     # Tonelaje (líneas punteadas)
-    ax.plot(list(hhi_em_ton.keys()), list(hhi_em_ton.values()), linewidth=2, color="#2171b5", linestyle="--", alpha=0.7, label="Emisivo – Tonelaje")
-    ax.plot(list(hhi_re_ton.keys()), list(hhi_re_ton.values()), linewidth=2, color="#cb181d", linestyle="--", alpha=0.7, label="Receptivo – Tonelaje")
+    ax.plot(
+        list(hhi_em_ton.keys()),
+        list(hhi_em_ton.values()),
+        linewidth=2,
+        color="#2171b5",
+        linestyle="--",
+        alpha=0.7,
+        label="Emisivo – Tonelaje",
+    )
+    ax.plot(
+        list(hhi_re_ton.keys()),
+        list(hhi_re_ton.values()),
+        linewidth=2,
+        color="#cb181d",
+        linestyle="--",
+        alpha=0.7,
+        label="Receptivo – Tonelaje",
+    )
 
     # Bandas de referencia HHI
-    all_vals = list(hhi_em_pax.values()) + list(hhi_re_pax.values()) + list(hhi_em_ton.values()) + list(hhi_re_ton.values())
+    all_vals = (
+        list(hhi_em_pax.values()) + list(hhi_re_pax.values()) + list(hhi_em_ton.values()) + list(hhi_re_ton.values())
+    )
     ax.axhspan(0, 1500, alpha=0.08, color="green")
     ax.axhspan(1500, 2500, alpha=0.08, color="orange")
     ax.axhspan(2500, max(all_vals) * 1.1, alpha=0.08, color="red")
@@ -372,7 +394,9 @@ def chart_04_continental_share(all_data: dict):
 
         for ax in (ax1, ax2):
             ax.axvspan(2020, 2022.83, alpha=0.15, color="gray")
-            ax.text(2021.4, ax.get_ylim()[1] * 0.9, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic")
+            ax.text(
+                2021.4, ax.get_ylim()[1] * 0.9, "COVID-19", ha="center", fontsize=9, color="gray", fontstyle="italic"
+            )
 
     # ── 04a: Emisivo ──
     val_em, yrs_em, conts_em, cols_em = _build_continent_matrix(all_data["emisivo_destinos_pasajeros"])
