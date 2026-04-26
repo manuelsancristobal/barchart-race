@@ -6,6 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "barchart-race-etl"
 version = "4.0.0"
 description = "ETL para datos de tráfico aéreo internacional JAC Chile + visualización D3.js"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Manuel San Cristobal", email = "msancristo@fen.uchile.cl"}]
 requires-python = ">=3.10"
 dependencies = [
     "pandas>=3.0,<4",
@@ -22,6 +25,10 @@ dev = [
     "pre-commit>=3.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/manuelsancristobal/barchart-race"
+Repository = "https://github.com/manuelsancristobal/barchart-race"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
@@ -33,3 +40,19 @@ line-length = 120
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 ignore = ["E501", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

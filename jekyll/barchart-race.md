@@ -115,3 +115,9 @@ Los gráficos anteriores muestran acumulados, participaciones y estructuras. Est
 ![Gráfico de líneas mostrando crecimiento interanual de los 5 destinos principales, con caídas extremas en 2020 y recuperación posterior](./assets/charts/07_yoy_growth_top5.png)
 
 Con esto se confirma que el crash COVID no fue un evento homogéneo: las caídas de 2020 fueron similares en magnitud para todos los destinos principales (-70% a -90%), pero la velocidad de recuperación varió significativamente. Los destinos regionales americanos rebotaron más rápido, en línea con la recuperación continental del 114% ya documentada, mientras que las rutas de largo alcance mostraron una recuperación más gradual. Las tasas de crecimiento también revelan fases de aceleración previas a la pandemia — períodos de +20% a +40% anual — que no son visibles en los datos acumulados del barchart race y que explican los cambios de ranking que la animación muestra.
+
+
+<div class="methodology-box" style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 8px; border-left: 4px solid var(--secondary);">
+    <p style="margin: 0; font-size: 0.95rem;">📌 <strong>Sobre este proyecto:</strong> Esta es la segunda versión del análisis, rediseñada como aplicación interactiva. El proyecto original, desarrollado como notebook exploratorio, está disponible en
+    <a href="https://colab.research.google.com/drive/1K883wlzwM9MwrDqLNV5MCT4f477mbF7Z?usp=sharing" target="_blank" style="color: var(--secondary); font-weight: 600;">Google Colab</a>.</p>
+</div>

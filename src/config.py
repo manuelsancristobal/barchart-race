@@ -14,25 +14,17 @@ DATA_WORK = PROJECT_ROOT / "data" / "work"
 CSV_LOCAL = DATA_RAW / "jac_data.csv"
 CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
 
-# Ruta al repo Jekyll local (obligatorio en producción; en CI/test se usa un fallback temporal)
+# Ruta al repo Jekyll local (opcional; solo necesario para deploy)
 _jekyll_env = os.getenv("JEKYLL_REPO")
-if not _jekyll_env:
-    raise OSError(
-        "\n"
-        "================================================================================\n"
-        "ERROR: Variable de entorno 'JEKYLL_REPO' no definida.\n"
-        "Para realizar el deploy, debes configurar la ruta hacia tu repositorio local.\n"
-        "================================================================================"
-    )
-JEKYLL_REPO = Path(_jekyll_env)
-JEKYLL_BASE = JEKYLL_REPO / "proyectos" / "barchart-race"
-JEKYLL_DATA_DIR = JEKYLL_BASE / "assets" / "data"
-JEKYLL_ANNOTATIONS_DIR = JEKYLL_BASE / "assets" / "annotations"
-JEKYLL_CHARTS_DIR = JEKYLL_BASE / "assets" / "charts"
-JEKYLL_CSS_DIR = JEKYLL_BASE / "assets" / "css"
-JEKYLL_JS_DIR = JEKYLL_BASE / "assets" / "js"
-JEKYLL_PAGE = JEKYLL_BASE / "viz.html"
-JEKYLL_PROJECTS_DIR = JEKYLL_REPO / "_projects"
+JEKYLL_REPO: Path | None = Path(_jekyll_env) if _jekyll_env else None
+JEKYLL_BASE = (JEKYLL_REPO / "proyectos" / "barchart-race") if JEKYLL_REPO else None
+JEKYLL_DATA_DIR = (JEKYLL_BASE / "assets" / "data") if JEKYLL_BASE else None
+JEKYLL_ANNOTATIONS_DIR = (JEKYLL_BASE / "assets" / "annotations") if JEKYLL_BASE else None
+JEKYLL_CHARTS_DIR = (JEKYLL_BASE / "assets" / "charts") if JEKYLL_BASE else None
+JEKYLL_CSS_DIR = (JEKYLL_BASE / "assets" / "css") if JEKYLL_BASE else None
+JEKYLL_JS_DIR = (JEKYLL_BASE / "assets" / "js") if JEKYLL_BASE else None
+JEKYLL_PAGE = (JEKYLL_BASE / "viz.html") if JEKYLL_BASE else None
+JEKYLL_PROJECTS_DIR = (JEKYLL_REPO / "_projects") if JEKYLL_REPO else None
 
 # Markdown del proyecto (fuente local)
 JEKYLL_PROJECT_MD = PROJECT_ROOT / "jekyll" / "barchart-race.md"

@@ -16,6 +16,7 @@ from src.config import (
     JEKYLL_PAGE,
     JEKYLL_PROJECT_MD,
     JEKYLL_PROJECTS_DIR,
+    JEKYLL_REPO,
     VIZ_DIR,
 )
 
@@ -28,6 +29,9 @@ logger = logging.getLogger(__name__)
 
 def deploy() -> None:
     """Copia archivos al repo Jekyll. El push es manual."""
+    if JEKYLL_REPO is None:
+        logger.error("Variable de entorno 'JEKYLL_REPO' no definida.")
+        return
     # ── JSONs de datos y anotaciones ──
     for src_dir, dst_dir, label, pattern in [
         (DATA_PROCESSED, JEKYLL_DATA_DIR, "datos", "*.json"),

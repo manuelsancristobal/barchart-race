@@ -2,7 +2,7 @@
 
 Este proyecto comenzó el año 2024, por esa fecha estaban de moda algunas páginas de Youtube que mostraban carreras de gráficos comparativas como el PIB de algunos países, o la participación de mercado de algunas marcas. Por esa época estaba aprendiendo Python y usaba Google Colab para modificar algunos trozos de código que encontraba en gallerias o en StackOverflow.
 
-La primera versión que me dejó orgulloso me costó una semana de desarrollo pos jornada laboral, el producto es el que puedes ver en los notebooks de jupyter de este repositorio.
+La primera versión que me dejó orgulloso me costó una semana de desarrollo pos jornada laboral, el producto está documentado en la sección v0 del [CHANGELOG](CHANGELOG.md).
 
 Dos años después he aprendido un par de trucos, y sumado a la asistencia de Claude, decidí reconstruir el proyecto desde cero, esta vez con una lógica de ETL (Extract, Transform, Load) usando Python y una visualización web desplegada en Jekyll.
 
@@ -244,7 +244,6 @@ Barchart-race/
 │   └── deploy.py            # Copia al repo Jekyll
 ├── jekyll/
 │   └── barchart-race.md     # Markdown del proyecto (deploy lo copia a Jekyll)
-├── notebooks/original/      # Notebooks prototipo archivados
 ├── viz/
 │   ├── index.html            # Página de visualización
 │   └── assets/
