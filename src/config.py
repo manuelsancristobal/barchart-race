@@ -8,11 +8,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_RAW = PROJECT_ROOT / "data" / "raw"
 DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
 DATA_ANNOTATIONS = PROJECT_ROOT / "data" / "annotations"
-DATA_REFERENCE = PROJECT_ROOT / "data" / "reference"
-DATA_WORK = PROJECT_ROOT / "data" / "work"
+DATA_EXTERNAL = PROJECT_ROOT / "data" / "external"
 
 CSV_LOCAL = DATA_RAW / "jac_data.csv"
-CONTINENT_MAPPING_CSV = DATA_REFERENCE / "continent_mapping.csv"
+CONTINENT_MAPPING_CSV = DATA_EXTERNAL / "continent_mapping.csv"
 
 # Ruta al repo Jekyll local (opcional; solo necesario para deploy)
 _jekyll_env = os.getenv("JEKYLL_REPO")

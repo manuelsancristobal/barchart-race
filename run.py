@@ -25,9 +25,7 @@ _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # --- Colores ANSI (se desactivan si la terminal no soporta) -----------
 
 def _supports_color() -> bool:
-    if not hasattr(sys.stdout, "isatty") or not sys.stdout.isatty():
-        return False
-    return True
+    return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 _COLOR = _supports_color()
 
@@ -108,7 +106,7 @@ def cmd_ver() -> bool:
     print(f"\n{_cyan('>')} {_bold('Servidor local')}")
     _sync_viz_data()
     print(f"  Abriendo {url} en el navegador...")
-    print(f"  Presiona Ctrl+C para detener el servidor.\n")
+    print("  Presiona Ctrl+C para detener el servidor.\n")
     webbrowser.open(url)
     try:
         subprocess.run(

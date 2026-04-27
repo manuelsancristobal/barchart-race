@@ -7,7 +7,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from src.config import CONTINENT_MAP, DATA_WORK
+from src.config import CONTINENT_MAP, DATA_RAW
 
 logger = logging.getLogger(__name__)
 
@@ -157,8 +157,8 @@ def apply_continent_mapping(df: pd.DataFrame) -> pd.DataFrame:
 
 def _save_unmapped(unmapped: np.ndarray) -> None:
     """Guarda lista de países no mapeados para revisión."""
-    DATA_WORK.mkdir(parents=True, exist_ok=True)
-    path = DATA_WORK / "unmapped_countries.txt"
+    DATA_RAW.mkdir(parents=True, exist_ok=True)
+    path = DATA_RAW / "unmapped_countries.txt"
     with open(path, "w", encoding="utf-8") as f:
         for country in sorted(unmapped):
             f.write(f"{country}\n")
