@@ -1,7 +1,10 @@
 # Barchart Race - Tráfico Aéreo Internacional Chile
 
+## Contexto
+Este proyecto nació en el año 2024, por esa época estaban de moda las animaciones de carreras de gráficos donde mostraban el avance del PIB de los países, facturación de marcas, tamaño de población, esas cosas.
+
 ## Impacto y Valor del Proyecto
-Esta herramienta proporciona una narrativa visual dinámica de la evolución del mercado aéreo internacional en Chile durante las últimas décadas. Al transformar datos estadísticos áridos de la JAC en visualizaciones "Race" interactivas, permite identificar rápidamente el ascenso de nuevas aerolíneas, la consolidación de hubs regionales y el impacto de eventos disruptivos globales. Es un ejemplo de cómo el storytelling con datos puede democratizar el acceso a información sectorial compleja.
+Esta herramienta te proporciona una dinámica visual de la evolución del mercado aéreo internacional en Chile durante las últimas décadas. Al transformar datos estadísticos de la JAC en visualizaciones "Race" interactivas, te permite identificar, de forma rápida, el ascenso de nuevas aerolíneas, la consolidación de hubs regionales y el impacto de eventos disruptivos globales.
 
 ## Stack Tecnológico
 - **Lenguaje**: Python 3.10+
@@ -14,7 +17,7 @@ Esta herramienta proporciona una narrativa visual dinámica de la evolución del
 1. **Pipeline ETL**: Limpieza masiva de datos históricos de la JAC, normalización de nombres de operadores y países.
 2. **Enriquecimiento**: Mapeo geográfico de países a continentes para análisis agregado.
 3. **Generación de Frames**: Cálculo de rankings acumulados mensuales para 8 combinaciones de métricas (Pasajeros/Carga x Aerolínea/Destino).
-4. **Visualización**: Renderizado dinámico con D3.js, permitiendo el cambio de perspectiva en tiempo real.
+4. **Visualización**: Renderizado dinámico con D3.js, permitiéndote el cambio de perspectiva en tiempo real.
 
 ## Quick Start (Reproducibilidad)
 1. `git clone https://github.com/manuelsancristobal/barchart-race`

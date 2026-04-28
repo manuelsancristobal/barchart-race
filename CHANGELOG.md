@@ -3,7 +3,7 @@
 ## v4.4 — Unificar markdown del proyecto en el repo barchart-race
 
 ### Problema
-El archivo `_projects/barchart-race.md` (textos de análisis, referencias a gráficos, iframe de la visualización) vivía exclusivamente en el repo Jekyll (`manuelsancristobal.github.io`), separado del código que genera los datos y gráficos. Esto fragmentaba el proyecto: editar un gráfico y su texto explicativo requería tocar dos repos, y quien clonara el repo no veía los análisis escritos.
+El archivo `_projects/barchart-race.md` (textos de análisis, referencias a gráficos, iframe de la visualización) vivía de forma exclusiva en el repo Jekyll (`manuelsancristobal.github.io`), separado del código que genera los datos y gráficos. Esto fragmentaba el proyecto: si querías editar un gráfico y su texto explicativo, tenías que tocar dos repos, y si clonabas el repo no podías ver los análisis escritos.
 
 ### Corrección
 - `jekyll/barchart-race.md`: copia del markdown del proyecto, ahora versionado en este repo
@@ -36,7 +36,7 @@ Jekyll's `_projects` collection genera `proyectos/barchart-race/index.html` desd
 - `_projects/barchart-race.md`: embebe la visualización via `<iframe src="./viz.html">`, corregido `github_url` al repo correcto
 
 ### Decisión de diseño
-Iframe embedding permite que Jekyll gestione la página del proyecto (layout, navegación, metadata) mientras la visualización D3.js vive en su propio documento sin conflicto de rutas.
+Iframe embedding te permite gestionar la página del proyecto (layout, navegación, metadata) mientras la visualización D3.js vive en su propio documento sin conflicto de rutas.
 
 ## v4.1 — Fix: formato numérico chileno en datos pre-2022
 
@@ -96,7 +96,7 @@ El CSV de la JAC usa formato numérico chileno (punto como separador de miles) e
 - Migración de agregación anual (~43 frames) a mensual (~506 frames) para transiciones más fluidas
 - Datos reales mes a mes (no interpolación), revelando patrones estacionales
 - JSON compacto indexado por entidad: un array de valores alineado a periodos compartidos
-- Slider mantiene granularidad por año (43 posiciones); animación recorre meses internamente
+- Slider mantiene granularidad por año (43 posiciones); animación recorre meses de forma interna
 - ~80ms por frame mensual ≈ 1 seg/año ≈ 43 seg totales de animación
 
 ### Cambios técnicos
@@ -115,7 +115,7 @@ El CSV de la JAC usa formato numérico chileno (punto como separador de miles) e
 - 2 notebooks independientes con ~70% código duplicado
 - Solo 2 visualizaciones: destinos emisivos y movimiento neto
 - Mapeo de continentes hardcodeado con 3 errores geográficos
-- Datos cargados manualmente via upload de Colab
+- Datos cargados de forma manual via upload de Colab
 - Output: archivos GIF estáticos
 
 ## v1 — Sistema Modular + Visualización Web Interactiva

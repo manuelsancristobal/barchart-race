@@ -10,6 +10,7 @@ Uso:
     python run.py deploy   # Copia archivos al repo Jekyll
     python run.py all      # Pipeline completo: etl -> charts -> deploy
 """
+
 from __future__ import annotations
 
 import glob
@@ -24,28 +25,36 @@ _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # --- Colores ANSI (se desactivan si la terminal no soporta) -----------
 
+
 def _supports_color() -> bool:
     return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
+
 _COLOR = _supports_color()
+
 
 def _green(text: str) -> str:
     return f"\033[92m{text}\033[0m" if _COLOR else text
 
+
 def _cyan(text: str) -> str:
     return f"\033[96m{text}\033[0m" if _COLOR else text
+
 
 def _red(text: str) -> str:
     return f"\033[91m{text}\033[0m" if _COLOR else text
 
+
 def _bold(text: str) -> str:
     return f"\033[1m{text}\033[0m" if _COLOR else text
+
 
 def _yellow(text: str) -> str:
     return f"\033[93m{text}\033[0m" if _COLOR else text
 
 
 # --- Helpers ----------------------------------------------------------
+
 
 def _run(cmd: list[str], label: str) -> bool:
     """Ejecuta un comando y retorna True si fue exitoso."""
@@ -62,6 +71,7 @@ def _run(cmd: list[str], label: str) -> bool:
 
 
 # --- Comandos ---------------------------------------------------------
+
 
 def cmd_etl(args: list[str]) -> bool:
     cmd = [sys.executable, "-m", "src.main"]
@@ -153,17 +163,17 @@ def cmd_all(args: list[str]) -> bool:
 
 def cmd_help() -> None:
     print(f"""
-{_bold('Barchart Race - Comandos disponibles')}
+{_bold("Barchart Race - Comandos disponibles")}
 
-  python run.py {_green('etl')}            Ejecuta el ETL (genera 8 JSONs)
-  python run.py {_green('etl --remote')}    Descarga datos frescos y ejecuta ETL
-  python run.py {_green('charts')}          Genera graficos de analisis (PNGs)
-  python run.py {_green('ver')}             Abre la visualizacion en el navegador
-  python run.py {_green('test')}            Ejecuta tests (pytest) + linting (ruff)
-  python run.py {_green('deploy')}          Copia archivos al repo Jekyll
-  python run.py {_green('all')}             Pipeline completo: etl -> charts -> deploy
+  python run.py {_green("etl")}            Ejecuta el ETL (genera 8 JSONs)
+  python run.py {_green("etl --remote")}    Descarga datos frescos y ejecuta ETL
+  python run.py {_green("charts")}          Genera graficos de analisis (PNGs)
+  python run.py {_green("ver")}             Abre la visualizacion en el navegador
+  python run.py {_green("test")}            Ejecuta tests (pytest) + linting (ruff)
+  python run.py {_green("deploy")}          Copia archivos al repo Jekyll
+  python run.py {_green("all")}             Pipeline completo: etl -> charts -> deploy
 
-{_yellow('Ejemplo:')} python run.py etl --remote
+{_yellow("Ejemplo:")} python run.py etl --remote
 """)
 
 
