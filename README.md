@@ -1,5 +1,7 @@
 # Barchart Race - Tráfico Aéreo Internacional Chile
 
+[![CI](https://github.com/manuelsancristobal/barchart-race/actions/workflows/ci.yml/badge.svg)](https://github.com/manuelsancristobal/barchart-race/actions/workflows/ci.yml)
+
 ## Contexto
 Este proyecto nació en el año 2024, por esa época estaban de moda las animaciones de carreras de gráficos donde mostraban el avance del PIB de los países, facturación de marcas, tamaño de población, esas cosas.
 
