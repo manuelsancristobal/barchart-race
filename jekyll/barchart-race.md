@@ -44,7 +44,7 @@ Por último, durante Enero 2026, la Ruta Santiago-Sydney recupera sus niveles pr
 
 ### Concentración de mercado: Índice Herfindahl-Hirschman
 
-El [Índice HHI](https://www.justice.gov/atr/file/810276/dl?inline=) mide la concentración de mercado sumando los cuadrados de las cuotas de participación de cada aerolínea. Según las [Horizontal Merger Guidelines (2010)](https://www.justice.gov/atr/file/810276/dl?inline=) del DOJ/FTC, valores bajo 1500 indican un mercado competitivo; entre 1500 y 2500, moderadamente concentrado; sobre 2500, altamente concentrado.
+El [Índice HHI](https://www.justice.gov/atr/file/810276/dl?inline=) mide la concentración de mercado sumando los cuadrados de las cuotas de participación de cada aerolínea. Según las [Horizontal Merger Guidelines (2010) pág 19](https://www.justice.gov/atr/file/810276/dl?inline=) del DOJ/FTC, valores bajo 1500 indican un mercado competitivo; entre 1500 y 2500, moderadamente concentrado; sobre 2500, altamente concentrado.
 
 ![Gráfico de líneas del índice HHI para mercados emisivo y receptivo, mostrando transición de alta concentración a mercado competitivo](./assets/charts/02_hhi_concentration.png)
 
@@ -118,6 +118,6 @@ Con esto se confirma que el crash COVID no fue un evento homogéneo: las caídas
 
 
 <div class="methodology-box" style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 8px; border-left: 4px solid var(--secondary);">
-    <p style="margin: 0; font-size: 0.95rem;">📌 <strong>Sobre este proyecto:</strong> Esta es la segunda versión del análisis, rediseñada como aplicación interactiva. El proyecto original, desarrollado como notebook exploratorio, está disponible en
+    <p style="margin: 0; font-size: 0.95rem;">📌 <strong>Sobre este proyecto:</strong> Esta es una versión mejorada del análisis original, rediseñado como aplicación interactiva. El proyecto original está disponible en
     <a href="https://colab.research.google.com/drive/1K883wlzwM9MwrDqLNV5MCT4f477mbF7Z?usp=sharing" target="_blank" style="color: var(--secondary); font-weight: 600;">Google Colab</a>.</p>
 </div>
