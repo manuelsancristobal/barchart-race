@@ -24,6 +24,8 @@ tech_stack:
   </iframe>
 </div>
 
+[Ver en pantalla completa](/proyectos/barchart-race/viz.html){: .btn .btn--primary }
+
 ## Análisis de Resiliencia y Concentración
 
 ### Estabilidad de la Carga ante Crisis

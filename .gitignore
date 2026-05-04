@@ -6,21 +6,30 @@ data/work/
 viz/assets/data/
 viz/assets/annotations/
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.egg-info/
+### --- PROFESSIONAL STANDARDS ---
+
+# Environments & Secrets
+.env
 .venv/
+env/
 venv/
+*.env
+auth.json
 
-# Claude Code
+# AI Assistants
 .claude/
+.gemini/
 
-# IDE
+# IDEs and Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
+# Operating System
 .DS_Store
 Thumbs.db
+
+# Project Specifics
+data/processed/
+output/
