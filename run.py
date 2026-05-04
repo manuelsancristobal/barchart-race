@@ -64,7 +64,7 @@ def _run(cmd: list[str], label: str) -> bool:
     env["PYTHONPATH"] = _PROJECT_ROOT + os.pathsep + env.get("PYTHONPATH", "")
     result = subprocess.run(cmd, cwd=_PROJECT_ROOT, env=env)
     if result.returncode != 0:
-        print(f"\n{_red('X')} {label} fallo (exit code {result.returncode})")
+        print(f"\n{_red('X')} {label} falló (exit code {result.returncode})")
         return False
     print(f"\n{_green('OK')} {label}")
     return True

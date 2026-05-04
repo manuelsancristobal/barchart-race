@@ -52,6 +52,5 @@ tech_stack:
 Este proyecto utiliza D3.js para las animaciones y JavaScript para el control temporal. El código fuente está disponible en [GitHub]({{ page.github_url }}).
 
 <div class="methodology-box" style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 8px; border-left: 4px solid var(--secondary);">
-    <p style="margin: 0; font-size: 0.95rem;">📌 <strong>Sobre este proyecto:</strong> Esta es una versión mejorada del análisis original. El proyecto original está disponible en
-    <a href="https://colab.research.google.com/drive/1K883wlzwM9MwrDqLNV5MCT4f477mbF7Z?usp=sharing" target="_blank" style="color: var(--secondary); font-weight: 600;">Google Colab</a>.</p>
+    <p style="margin: 0; font-size: 0.95rem;">📌 <strong>Sobre este proyecto:</strong> Esta es una versión mejorada del análisis original. El proyecto original está disponible en <a href="https://colab.research.google.com/drive/1K883wlzwM9MwrDqLNV5MCT4f477mbF7Z?usp=sharing" target="_blank" style="color: var(--secondary); font-weight: 600;">Google Colab</a>.</p>
 </div>
