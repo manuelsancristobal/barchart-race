@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import logging
 import shutil
+import subprocess
+import sys
+from pathlib import Path
 
 from src.config import (
     DATA_ANNOTATIONS,
@@ -27,8 +30,24 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def run_ruff_check() -> None:
+    """Ejecuta ruff check y aborta el deploy si hay errores."""
+    logger.info("Ejecutando validación de código con Ruff...")
+    try:
+        project_root = Path(__file__).parent.parent
+        subprocess.run(["ruff", "check", "."], check=True, capture_output=True, text=True, cwd=project_root)
+        logger.info("Validación Ruff: OK")
+    except subprocess.CalledProcessError as e:
+        logger.error("Validación Ruff falló. Corrige los errores antes de desplegar:")
+        print(e.stdout)
+        sys.exit(1)
+    except FileNotFoundError:
+        logger.warning("Ruff no está instalado. Saltando validación.")
+
+
 def deploy() -> None:
     """Copia archivos al repo Jekyll. El push es manual."""
+    run_ruff_check()
     if JEKYLL_REPO is None:
         logger.error("Variable de entorno 'JEKYLL_REPO' no definida.")
         return
